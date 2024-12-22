@@ -1,12 +1,12 @@
-if game.PlaceId == 5708035517 or game.PlaceId == 6063653725 then
+if game.PlaceId == 5708035517 or game.PlaceId == 6063653725 then -- mega hide and seek
 	loadstring(game:HttpGet('https://pastebin.com/raw/pa40iK5b'))()
-elseif game.PlaceId == 14157644155 then
+elseif game.PlaceId == 14157644155 then -- 0
 	loadstring(game:HttpGet('https://pastebin.com/raw/wqFAwu31'))()
-elseif game.PlaceId == 11276071411 then
+elseif game.PlaceId == 11276071411 then -- be npc or die
 	loadstring(game:HttpGet('https://pastebin.com/raw/yeqXz5vu'))()
-elseif game.PlaceId == 10260193230 then
+elseif game.PlaceId == 10260193230 then -- meme sea
 	loadstring(game:HttpGet('https://pastebin.com/raw/3ywWwACJ'))()
-elseif game.PlaceId == 116605585218149 then
+elseif game.PlaceId == 116605585218149 then -- go fishing
 	loadstring(game:HttpGet('https://pastebin.com/raw/J2sY7DjT'))()
 else
 	print('game not supported')
