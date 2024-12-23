@@ -13,7 +13,7 @@ local function CheckKey(v)
             {Title = "Key System", Description = "Key Valid."},
             {OutlineColor = Color3.fromRGB(80, 255, 80),Time = 5, Type = "option"}
         )
-        loadstring(game:HttpGet('https://pastebin.com/raw/2TizppDE'))()
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/tym487ty78/yyyyyyyy1/refs/heads/main/NextStep.lua'))()
         return true
     elseif _G.key == '1234' then
         if game.Players.LocalPlayer.Name == 'VateQOfficial' or game.Players.LocalPlayer.Name == 'VateQvateq980' then
@@ -21,7 +21,7 @@ local function CheckKey(v)
                 {Title = "Key System", Description = "Key Valid."},
                 {OutlineColor = Color3.fromRGB(80, 255, 80),Time = 5, Type = "option"}
             )
-            loadstring(game:HttpGet('https://pastebin.com/raw/2TizppDE'))()
+            loadstring(game:HttpGet('https://raw.githubusercontent.com/tym487ty78/yyyyyyyy1/refs/heads/main/NextStep.lua'))()
             return true
         end
     else
