@@ -77,7 +77,7 @@ if not CheckKey() then
     end)
 
     login:AddButton("Get Key Link", function()
-        setclipboard(tostring("https://discord.gg/uk27Snmt5W"))
+        setclipboard(tostring("https://discord.gg/EAbRQtEzWY"))
         local Notification = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Client.Lua"))()
         Notification:Notify(
             {Title = "Key System", Description = "link copied to clipboard"},
@@ -102,11 +102,11 @@ if not CheckKey() then
 
     discord:AddButton("Copy Invite Link", function()
         if setclipboard then
-            setclipboard('https://discord.gg/uk27Snmt5W')
+            setclipboard('https://discord.gg/EAbRQtEzWY')
             print'Invite Link Copied to clipboard'
         else
             print'setclipboard not supported on the executor.'
-            print'link: https://discord.gg/uk27Snmt5W'
+            print'link: https://discord.gg/EAbRQtEzWY'
         end
     end)
 
