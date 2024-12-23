@@ -8,7 +8,7 @@ end
 local function CheckKey(v)
     v = v or false
     local Notification = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Client.Lua"))()
-    if _G.key == game:HttpGet("https://raw.githubusercontent.com/tym487ty78/yyyyyyyy1/refs/heads/main/freekey") or v then
+    if _G.key == game:HttpGet("https://raw.githubusercontent.com/tym487ty78/yyyyyyyy1/refs/heads/main/freekey.txt") or v then
         Notification:Notify(
             {Title = "Key System", Description = "Key Valid."},
             {OutlineColor = Color3.fromRGB(80, 255, 80),Time = 5, Type = "option"}
