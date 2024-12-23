@@ -287,7 +287,7 @@ end)
 
 local section2 = maintab:AddCategory("Auto Sell",2,1)
 
-section2:AddSlider('Sell When Have Fish', {1, 100, 50, 1, ""}, '', function(v)
+section2:AddSlider('Sell When Have Fish', {1, 350, 50, 1, ""}, '', function(v)
     _G.candyhub.sellamount = v
 end, false)
 
@@ -418,10 +418,12 @@ section3:AddDropdown('Rod: ', rods,'Steel Rod','',function(v)
 end, true)
 
 section3:AddButton('Buy Rod', function()
+    for i=1,_G.candyhub.buyamount do
     if not game:GetService("Players").LocalPlayer.inventory.rods:FindFirstChild(_G.candyhub.rod) then
         local args = {[1] = _G.candyhub.rod,[2] = "rods",[3] = "fishingSettings",[4] = "oneTime"}
         game:GetService("ReplicatedStorage"):WaitForChild("events"):WaitForChild("fishing"):WaitForChild("canShopPurchase"):InvokeServer(unpack(args))
     end
+end
 end)
 
 section3:AddDropdown('Bait: ', baits,'Apple','',function(v)
@@ -429,8 +431,10 @@ section3:AddDropdown('Bait: ', baits,'Apple','',function(v)
 end, true)
 
 section3:AddButton('Buy Bait', function()
+    for i=1,_G.candyhub.buyamount do
     local args = {[1] = _G.candyhub.bait,[2] = "baits",[3] = "fishingSettings",[4] = "manyTime"}
     game:GetService("ReplicatedStorage"):WaitForChild("events"):WaitForChild("fishing"):WaitForChild("canShopPurchase"):InvokeServer(unpack(args))    
+    end
 end)
 
 section3:AddDropdown('Potion: ', potions,'Luck Potion I','',function(v)
@@ -438,9 +442,48 @@ section3:AddDropdown('Potion: ', potions,'Luck Potion I','',function(v)
 end, true)
 
 section3:AddButton('Buy Potion', function()
+    for i=1,_G.candyhub.buyamount do
     local args = {[1] = _G.candyhub.potion,[2] = "potions",[3] = "fishingSettings",[4] = "manyTime"}
-    game:GetService("ReplicatedStorage"):WaitForChild("events"):WaitForChild("fishing"):WaitForChild("canShopPurchase"):InvokeServer(unpack(args))    
+    game:GetService("ReplicatedStorage"):WaitForChild("events"):WaitForChild("fishing"):WaitForChild("canShopPurchase"):InvokeServer(unpack(args))  
+    end  
 end)
+
+section3:AddSlider('Buy Amount', {1, 50, 1, 1, ""}, '', function(v)
+    _G.candyhub.buyamount = v
+end, false)
+
+local section222 = tab2:AddCategory("Auto Bait",2,1)
+section222:AddDropdown('Bait: ', baits,'Apple','',function(v)
+	_G.candyhub.abait = v or 'Apple'
+end, true)
+section222:AddToggle('Auto Buy Bait on use',false,'',function(v)
+	_G.candyhub.autobait = v
+    while _G.candyhub.autobait and task.wait() do
+        local h = game:GetService("Players").LocalPlayer.inventory.baits:FindFirstChild(_G.candyhub.abait).Value
+        repeat task.wait() until game:GetService("Players").LocalPlayer.inventory.baits:FindFirstChild(_G.candyhub.abait).Value < h or not _G.candyhub.autobait
+        if _G.candyhub.autobait then
+            local args = {[1] = _G.candyhub.abait,[2] = "baits",[3] = "fishingSettings",[4] = "manyTime"}
+            game:GetService("ReplicatedStorage"):WaitForChild("events"):WaitForChild("fishing"):WaitForChild("canShopPurchase"):InvokeServer(unpack(args))    
+        end
+    end
+end)
+--[[
+section222:AddToggle('Inf Bait (patched)', false, '', function(v)
+    _G.candyhub.infbait = v
+    while _G.candyhub.infbait and task.wait() do
+        local bait = game:GetService("Players").LocalPlayer.inventory.baitsEquippedName.Value
+        if not game:GetService("Players").LocalPlayer.fishing.general.activeFishing.Value and not game:GetService("Players").LocalPlayer.fishing.general.activeFighting.Value then
+            game:GetService("Players").LocalPlayer.inventory.baitsEquippedName.Value = bait
+        else
+            game:GetService("Players").LocalPlayer.inventory.baitsEquippedName.Value='Hook'
+            repeat task.wait(.3) until not game:GetService("Players").LocalPlayer.fishing.general.activeFishing.Value do
+                task.wait(1)
+                game:GetService("Players").LocalPlayer.inventory.baitsEquippedName.Value = bait
+            end
+        end
+    end
+end)
+]]
 
 local tab3 = Window:CreateTab('Area')
 local section4 = tab3:AddCategory("Teleport",1,1)
