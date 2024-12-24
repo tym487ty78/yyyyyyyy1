@@ -38,13 +38,14 @@ local function AntiGamepass(mode)
     end
 end
 
-
-if game.CoreGui:FindFirstChild('chub-ui{13}') then
-	game.CoreGui:FindFirstChild('chub-ui{13}'):Destroy()
+for i, coreui in game.CoreGui:GetChildren() do
+    if coreui.Name == 'chub-ui' then
+        coreui:Destroy()
+    end
 end
 local library = loadstring(game:HttpGet('https://raw.githubusercontent.com/vateq/UILIBrewrites/refs/heads/main/hexagonuilib'))()
 library.settings = {
-	guiname = "chub-ui{13}",
+	guiname = "chub-ui",
 	title = 'Candy Hub - Go Fishing',
 	modal = true,
 	font = Enum.Font.SourceSans,
@@ -76,6 +77,8 @@ _G.candyhub = {
     sellamount = 50,
     infbait = false,
     sellallwait=2.2,
+    buyamount=1,
+    asafezone=false,
 }
 
 local zones = {
@@ -104,7 +107,7 @@ local spawns = {
 
 
 local Window = library:CreateWindow(
-	Vector2.new(350, 375), 
+	Vector2.new(350, 450), 
 	Vector2.new(
 		(workspace.CurrentCamera.ViewportSize.X / 2) - 250, 
 		(workspace.CurrentCamera.ViewportSize.Y / 2) - 250
@@ -156,25 +159,67 @@ local function cne_Rod()
     end
 end
 
-local function SellAll(v)
-    local hhe = 0
-    for i, u in game:GetService("Players").LocalPlayer.inventory.fishes:GetChildren() do
-        hhe+=1
-    end
-    if hhe >= v and Lives() then
-        local hut = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
-        game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = false
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(815.194214, 125.560997, -250.464111, -0.847631931, 0, 0.530584812, 0, 1, 0, -0.530584812, 0, -0.847631931)
-        task.wait(_G.candyhub.sellallwait)
-        for i, fish in game:GetService("Players").LocalPlayer.inventory.fishes:GetChildren() do
-            local args = {[1] = fish.Name,[2] = fish:GetAttribute('itemId')}
-            game:GetService("ReplicatedStorage"):WaitForChild("events"):WaitForChild("fishing"):WaitForChild("itemSell"):InvokeServer(unpack(args))        
+_G.isselling = false
+
+local function SellAll(v,x)
+    if not _G.isselling then
+        x=x or {'default','gold','diamond'}
+        local default = false
+        local gold = false
+        local diamond = false
+        for g,y in x do
+            if y == 'default' then
+                default = true
+            elseif y == 'gold' then
+                gold = true
+            elseif y == 'diamond' then
+                diamond = true
+            end
         end
-        task.wait(2.2)
-        game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = false
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = hut
+
+        local hhe = 0
+        for i, fich in game:GetService("Players").LocalPlayer.inventory.fishes:GetChildren() do
+            if fich:GetAttribute('tier') == 'default' and default then
+                hhe+=1
+            elseif fich:GetAttribute('tier') == 'gold' and gold then
+                hhe+=1
+            elseif fich:GetAttribute('tier') == 'diamond' and diamond then
+                hhe+=1
+            end
+        end
+        if hhe >= v and Lives() then
+            _G.isselling = true
+            local hut = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+            for i = 1,20 do
+            game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = false
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(815.194214, 125.560997, -250.464111, -0.847631931, 0, 0.530584812, 0, 1, 0, -0.530584812, 0, -0.847631931)
+            task.wait()
+            end
+            task.wait(_G.candyhub.sellallwait)
+            for i, fish in game:GetService("Players").LocalPlayer.inventory.fishes:GetChildren() do
+                if fish:GetAttribute('tier') == 'default' and default then
+                    local args = {[1] = fish.Name,[2] = fish:GetAttribute('itemId')}
+                    game:GetService("ReplicatedStorage"):WaitForChild("events"):WaitForChild("fishing"):WaitForChild("itemSell"):InvokeServer(unpack(args))
+                elseif fish:GetAttribute('tier') == 'gold' and gold then
+                    local args = {[1] = fish.Name,[2] = fish:GetAttribute('itemId')}
+                    game:GetService("ReplicatedStorage"):WaitForChild("events"):WaitForChild("fishing"):WaitForChild("itemSell"):InvokeServer(unpack(args))
+                elseif fish:GetAttribute('tier') == 'diamond' and diamond then
+                    local args = {[1] = fish.Name,[2] = fish:GetAttribute('itemId')}
+                    game:GetService("ReplicatedStorage"):WaitForChild("events"):WaitForChild("fishing"):WaitForChild("itemSell"):InvokeServer(unpack(args))
+                end
+            end
+            task.wait(2.2)
+            for i = 1, 20 do
+                game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = false
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = hut + Vector3.new(0,3,0)
+                SafeZone(game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame-Vector3.new(0,3,0))
+                task.wait()
+            end
+            _G.isselling = false
+        end
     end
 end
+
 local farmsection = maintab:AddCategory("Auto Farm",1,1)
 farmsection:AddToggle('Auto Cast',false,'',function(v)
 	_G.candyhub.autocast = v
@@ -188,9 +233,10 @@ farmsection:AddToggle('Auto Cast',false,'',function(v)
                             local h = game:GetService("Players").LocalPlayer.gui.autofishing.Value
                             game:GetService("Players").LocalPlayer.gui.autofishing.Value = true
                             game:GetService("VirtualInputManager"):SendMouseButtonEvent(0, 0, 0, true, nil, 0)
-                            if not ame:GetService("Players").LocalPlayer.fishing.general.activeFishing.Value and not game:GetService("Players").LocalPlayer.fishing.general.activeFighting.Value then
-                                task.wait(_G.candyhub.holdtime)
-                            end
+                            --if not game:GetService("Players").LocalPlayer.fishing.general.activeFishing.Value and not game:GetService("Players").LocalPlayer.fishing.general.activeFighting.Value then
+                            --    task.wait(_G.candyhub.holdtime)
+                            --end
+                            repeat task.wait() until game:GetService("Players").LocalPlayer.fishing.general.activeFishing.Value or game:GetService("Players").LocalPlayer.fishing.general.activeFighting.Value
                             game:GetService("VirtualInputManager"):SendMouseButtonEvent(0, 0, 0, false, nil, 0)
                             game:GetService("Players").LocalPlayer.gui.autofishing.Value = h
                         end
@@ -283,24 +329,29 @@ section3:AddToggle('+ Luck',false,'',function(v)
 	_G.candyhub.stats.luck = v
 end)
 
-
-
 local section2 = maintab:AddCategory("Auto Sell",2,1)
+
+section2:AddToggle('Auto Sell Fish',false,'',function(v)
+	_G.candyhub.autosell = v
+    _G.isselling = false
+    while _G.candyhub.autosell and task.wait(.2) do
+        SellAll(_G.candyhub.sellamount,_G.candyhub.selltiers)
+    end
+end)
 
 section2:AddSlider('Sell When Have Fish', {1, 350, 50, 1, ""}, '', function(v)
     _G.candyhub.sellamount = v
 end, false)
 
-section2:AddToggle('Auto Sell Fish',false,'',function(v)
-	_G.candyhub.autosell = v
-    while _G.candyhub.autosell and task.wait(3) do
-        SellAll(_G.candyhub.sellamount)
-    end
-end)
+section2:AddMultiDropdown('Sell Tiers: ', {'default', 'gold','diamond'}, {'default', 'gold','diamond'}, '', function(v)
+    _G.candyhub.selltiers = v
+end, true)
 
-section2:AddToggle('Auto Upgrade Fish',false,'',function(v)
+local section523 = maintab:AddCategory("Auto Upgrade",2,1)
+
+section523:AddToggle('Auto Upgrade Fish',false,'',function(v)
 	_G.candyhub.autoupgrade_fish = v
-    while _G.candyhub.autoupgrade_fish and task.wait(1) do
+    while _G.candyhub.autoupgrade_fish and task.wait(.25) do
         for i, fish in game:GetService("Players").LocalPlayer.inventory.fishes:GetChildren() do
             local args = {
                 [1] = fish.Name,
@@ -312,7 +363,7 @@ section2:AddToggle('Auto Upgrade Fish',false,'',function(v)
     end
 end)
 
-section2:AddToggle('Auto Upgrade Gift',false,'',function(v)
+section523:AddToggle('Auto Upgrade Gift',false,'',function(v)
 	_G.candyhub.autoupgrade_present = v
     while _G.candyhub.autoupgrade_present and task.wait(1) do
         for i, present in game:GetService("Players").LocalPlayer.inventory.chests:GetChildren() do
@@ -369,23 +420,40 @@ section_cz:AddDropdown('Teleport To Cast-Zone', {'Default Isle','Vulcano Isle','
         end
     end
 end, true)
+
 section_cz:AddToggle('Auto Cast Zone',false,'',function(v)
 	_G.candyhub.autozone = v
-    while _G.candyhub.autozone and task.wait(1.5) do
+    while _G.candyhub.autozone and task.wait() do
+        SafeZone(_G.candyhub.zone)
         local hhe = 0
         for i, u in game:GetService("Players").LocalPlayer.inventory.fishes:GetChildren() do
             hhe+=1
         end
-        if Lives() and _G.candyhub.sellamount > hhe then
+        if Lives() and _G.candyhub.sellamount > hhe and _G.candyhub.autosell then
             game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = false
-            SafeZone(_G.candyhub.zone)
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = _G.candyhub.zone + Vector3.new(0,3,0)
             if _G.candyhub.freezechar then
                 game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = true
             end
+            task.wait(1.5)
+        elseif not _G.candyhub.autosell then
+            game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = false
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = _G.candyhub.zone + Vector3.new(0,3,0)
+            if _G.candyhub.freezechar then
+                game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = true
+            end
+            task.wait(1.5)
         end
     end
 end)
+
+section_cz:AddToggle('Always SafeZone',false,'',function(v)
+	_G.candyhub.asafezone = v
+    while _G.candyhub.asafezone and task.wait() do
+        SafeZone(_G.candyhub.zone+Vector3.new(0,-1,0))
+    end
+end)
+
 section_cz:AddToggle('Freeze Character',false,'',function(v)
     _G.candyhub.freezechar = v
     while _G.candyhub.freezechar and task.wait(.05) do
@@ -403,7 +471,7 @@ local section3 = tab2:AddCategory("Buy",1,1)
 
 local rods = {'Steel Rod','Gold Rod','Diamond Rod','Amethyst Rod','Angel Rod','Shark Rod',
 'Rainbow Rod','Devil Rod','Bone Rod','Dead Rod','Trident Rod','Medusa Rod','Hammer Rod','Spider Rod',
-'Thunder Rod','Toxic Rod','Nuke Rod','Light Saber Rod'}
+'Thunder Rod','Toxic Rod','Nuke Rod','Light Saber Rod', 'Broken Rod'}
 
 local baits = {'Apple','Carrot','Grapes','Worm','Gummy','Fish Bait','Star','Gold','Magma','Diamond','Rainbow','Galaxy','Hairy','Rocket','Nuke','Blackhole'}
 
@@ -452,6 +520,14 @@ section3:AddSlider('Buy Amount', {1, 50, 1, 1, ""}, '', function(v)
     _G.candyhub.buyamount = v
 end, false)
 
+section3:AddButton('Redeem Codes (AutoUpdate)', function()
+    for i, code in game:GetService("Players").LocalPlayer.rewards.codes:GetChildren() do
+        if not code.Value then
+            game:GetService("ReplicatedStorage"):WaitForChild("events"):WaitForChild("gui"):WaitForChild("canRedeemCode"):InvokeServer(code.Name)
+        end
+    end
+end)
+
 local section222 = tab2:AddCategory("Auto Bait",2,1)
 section222:AddDropdown('Bait: ', baits,'Apple','',function(v)
 	_G.candyhub.abait = v or 'Apple'
@@ -460,11 +536,12 @@ section222:AddToggle('Auto Buy Bait on use',false,'',function(v)
 	_G.candyhub.autobait = v
     while _G.candyhub.autobait and task.wait() do
         local h = game:GetService("Players").LocalPlayer.inventory.baits:FindFirstChild(_G.candyhub.abait).Value
-        repeat task.wait() until game:GetService("Players").LocalPlayer.inventory.baits:FindFirstChild(_G.candyhub.abait).Value < h or not _G.candyhub.autobait
+        repeat task.wait(.1) until game:GetService("Players").LocalPlayer.inventory.baits:FindFirstChild(_G.candyhub.abait).Value < h or not _G.candyhub.autobait
         if _G.candyhub.autobait then
             local args = {[1] = _G.candyhub.abait,[2] = "baits",[3] = "fishingSettings",[4] = "manyTime"}
             game:GetService("ReplicatedStorage"):WaitForChild("events"):WaitForChild("fishing"):WaitForChild("canShopPurchase"):InvokeServer(unpack(args))    
         end
+        task.wait()
     end
 end)
 --[[
