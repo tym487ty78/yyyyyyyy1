@@ -23,8 +23,6 @@ local autoraidsec = tab5:Section("Auto Raid")
 local tab4 = win:Tab("Settings")
 local sec6 = tab4:Section("Settings")
 
-
-
 _G.candyhub = {
     autofloppa = false,
     tokill = "Floppa",
@@ -50,6 +48,10 @@ _G.candyhub = {
     tokill_monster = 'Red Sus',
 }
 
+local function getNil(name,class) 
+    return game.Players.LocalPlayer.Character:FindFirstChildOfClass('Tool')
+end
+
 local function Press(key)
     local VirtualInputManager = game:GetService("VirtualInputManager")
     VirtualInputManager:SendKeyEvent(true, key, false, nil)
@@ -63,12 +65,8 @@ local function click(cd)
             game.Players.LocalPlayer.Backpack:FindFirstChild(_G.candyhub.weapon).Parent = game.Players.LocalPlayer.Character
         end
     end
-    local VirtualInputManager = game:GetService("VirtualInputManager")
-    local x, y = 0, 0
-    task.wait(cd/1000)
-    VirtualInputManager:SendMouseButtonEvent(x, y, 0, true, nil, 0)
-    task.wait(cd/1000)
-    VirtualInputManager:SendMouseButtonEvent(x, y, 0, false, nil, 0)
+    game:GetService("VirtualUser"):CaptureController()
+    game:GetService("VirtualUser"):ClickButton1(Vector2.new(10000,10000), game:GetService("Workspace").Camera.CFrame)
 end
 
 local function CheckQuest()
@@ -105,6 +103,14 @@ local function Lives()
         end
     end
 end
+
+local function StoreEquippedFruit()
+    if Lives() then
+        local args = {[1] = "Eatable_Power",[2] = {["Action"] = "Store",["Tool"] = getNil("PowerName", "PowerClassName")}}
+        game:GetService("ReplicatedStorage"):WaitForChild("OtherEvent"):WaitForChild("MainEvents"):WaitForChild("Modules"):FireServer(unpack(args))
+    end
+end
+
 
 local function UseAura()
     if Lives() then
@@ -834,7 +840,7 @@ sec3:Button("Redeem Codes", function()
     end
 end)
 
-sec3:Button("Roll Fruits", function()
+sec3:Button("Roll Powers", function()
     for i = 1,_G.candyhub.amount do
         local args = {[1] = "Random_Power",[2] = {["Type"] = "Once",["NPCName"] = "Floppa Gacha",["GachaType"] = _G.candyhub.buyfruitmode}}
         game:GetService("ReplicatedStorage"):WaitForChild("OtherEvent"):WaitForChild("MainEvents"):WaitForChild("Modules"):FireServer(unpack(args))
