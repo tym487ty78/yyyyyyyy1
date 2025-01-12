@@ -350,8 +350,8 @@ end, true)
 local section523 = maintab:AddCategory("Auto Upgrade",2,1)
 
 section523:AddToggle('Auto Upgrade Fish',false,'',function(v)
-	_G.candyhub.autoupgrade_fish = v
-    while _G.candyhub.autoupgrade_fish and task.wait(.25) do
+	--_G.candyhub.autoupgrade_fish = v
+    --[[while _G.candyhub.autoupgrade_fish and task.wait(.25) do
         for i, fish in game:GetService("Players").LocalPlayer.inventory.fishes:GetChildren() do
             local args = {
                 [1] = fish.Name,
@@ -360,21 +360,7 @@ section523:AddToggle('Auto Upgrade Fish',false,'',function(v)
             }
             game:GetService("ReplicatedStorage"):WaitForChild("events"):WaitForChild("gui"):WaitForChild("canUpgradeTier"):InvokeServer(unpack(args))            
         end
-    end
-end)
-
-section523:AddToggle('Auto Upgrade Gift',false,'',function(v)
-	_G.candyhub.autoupgrade_present = v
-    while _G.candyhub.autoupgrade_present and task.wait(1) do
-        for i, present in game:GetService("Players").LocalPlayer.inventory.chests:GetChildren() do
-            local args = {
-                [1] = present.Name,
-                [2] = "chests",
-                [3] = present:GetAttribute('itemId')
-            }
-            game:GetService("ReplicatedStorage"):WaitForChild("events"):WaitForChild("gui"):WaitForChild("canUpgradeTier"):InvokeServer(unpack(args))   
-        end
-    end
+    end]]
 end)
 
 --[[ -- patched
