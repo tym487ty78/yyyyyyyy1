@@ -7,8 +7,8 @@ elseif game.PlaceId == 11276071411 then -- be npc or die
 elseif game.PlaceId == 10260193230 then -- meme sea
 	loadstring(game:HttpGet('https://raw.githubusercontent.com/tym487ty78/yyyyyyyy1/refs/heads/main/MemeSea.lua'))()
 elseif game.PlaceId == 116605585218149 then -- go fishing
-	--loadstring(game:HttpGet('https://raw.githubusercontent.com/tym487ty78/yyyyyyyy1/refs/heads/main/gofishing.lua'))()
-	print('script bannable + patched, W.I.P')
+	loadstring(game:HttpGet('https://raw.githubusercontent.com/tym487ty78/yyyyyyyy1/refs/heads/main/gofishing.lua'))()
+	print('script bannable W.I.P')
 else
 	print('game not supported')
 end
