@@ -799,13 +799,12 @@ local Window = library:CreateWindow(
 	Vector2.new((workspace.CurrentCamera.ViewportSize.X / 2) - 250, (workspace.CurrentCamera.ViewportSize.Y / 2) - 250) -- ui pointing (id what i just called it lol) just dont change it.
 )
 
-skinunlock()
-
 _G.blockesp = false
 _G.aimbot = true
 _G.fov = 60
 _G.smoothing = 1
 _G.bhop = false
+_G.bind = Enum.KeyCode.F
 --_G.autoloadcfg = true
 
 
@@ -829,13 +828,16 @@ category1:AddToggle('Aimbot',_G.aimbot,'',function(v)
 end)
 
 category1:AddSlider('Aim Smooth', {1, 5, 1, 1, ""}, '', function(v)
-    _G.fov = v
+    _G.smoothing = v
 end, false)
 
 category1:AddSlider('Aim Fov', {1, 512, 128, 1, ""}, '', function(v)
     _G.fov = v
 end, false)
 
+category:AddKeybind('Bind',Enum.KeyCode.F,'',function(v)
+	_G.bind = v
+end)
 
 
 local category2 = maintab:AddCategory("Misc",1,1)
@@ -865,6 +867,10 @@ category2:AddButton('NoSpread', function()
             end
         end
     end
+end)
+
+category2:AddButton('Unlock Skins', function()
+    skinunlock()
 end)
 
 
@@ -975,7 +981,7 @@ end
 local loop
 loop = game:GetService('RunService').Heartbeat:Connect(
     function()
-        local pressed = game:GetService('UserInputService'):IsMouseButtonPressed(Enum.UserInputType.MouseButton2) -- Right mouse button pressed
+        local pressed = game:GetService('UserInputService'):IsMouseButtonPressed(_G.bind) -- Right mouse button pressed
         local cam = workspace.CurrentCamera
         local zz = cam.ViewportSize / 2
 
@@ -1007,4 +1013,3 @@ game:GetService('UserInputService').InputEnded:Connect(function(input)
         _G.HoldingSpace = false
     end
 end)
-
