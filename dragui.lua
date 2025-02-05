@@ -39,4 +39,4 @@ UserInputService.InputChanged:Connect(function(input)
   end
 end)
 end
-return {MakeDraggable}
+return MakeDraggable
