@@ -11,6 +11,9 @@ elseif game.PlaceId == 116605585218149 then -- go fishing
 	print('script bannable W.I.P')
 elseif game.PlaceId == 10789933399 then
 	loadstring(game:HttpGet('https://raw.githubusercontent.com/tym487ty78/yyyyyyyy1/refs/heads/main/geometryjump.lua'))()
+
+elseif game.PlaceId == 126884695634066 then
+	loadstring(game:HttpGet('https://raw.githubusercontent.com/tym487ty78/yyyyyyyy1/refs/heads/main/growagarden.lua'))()
 else
 	print('game not supported')
 end
