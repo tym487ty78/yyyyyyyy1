@@ -9,6 +9,7 @@ elseif game.PlaceId == 10260193230 then -- meme sea
 elseif game.PlaceId == 116605585218149 then -- go fishing
 	loadstring(game:HttpGet('https://raw.githubusercontent.com/tym487ty78/yyyyyyyy1/refs/heads/main/gofishing.lua'))()
 	print('script bannable W.I.P')
+	print("you are running older version from 2024")
 elseif game.PlaceId == 10789933399 then
 	loadstring(game:HttpGet('https://raw.githubusercontent.com/tym487ty78/yyyyyyyy1/refs/heads/main/geometryjump.lua'))()
 elseif game.PlaceId == 126884695634066 then
