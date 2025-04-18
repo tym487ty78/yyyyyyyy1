@@ -137,7 +137,7 @@ _G.candyhub = {
 
 local maintab = Window:CreateTab('Main')
 local category5525 = maintab:AddCategory("Auto Farm",1,1)
-category5525:AddToggle('Auto Plant',_G.candyhub.autoplant,'',function(v)
+category5525:AddToggle('Auto Plant (W.I.P)',_G.candyhub.autoplant,'',function(v)
     task.spawn(function()
         
         _G.candyhub.autoplant = v
