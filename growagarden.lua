@@ -270,38 +270,14 @@ category2:AddButton('Sell All Once', function()
 end)
 
 local misctab = Window:CreateTab('Misc')
-local category3525 = eventtab:AddCategory("Event",1,1)
+local category3525 = misctab:AddCategory("Event",1,1)
 category3525:AddToggle('Auto Collect Eggs (WIP)',false,'',function(v)
     task.spawn(function()
     end)
 end)
 
-local category5 = maintab:AddCategory("IngameStuff",2,1)
+local category5 = misctab:AddCategory("IngameStuff",2,1)
 category5:AddButton('Enable Game Fly (F) (WIP)', function()
     local env = getsenv(game:GetService("Players").LocalPlayer.PlayerScripts.FlyScript)
     env.v_u_19[Enum.KeyCode.F]["TOGGLE"]()
 end)
-
-local category325 = misctab:AddCategory("WateringCan-Dupe",2,1)
-
-category325:AddButton('Buy (50K$)', function()
-    local args = {
-        [1] = "WateringCan",
-        [2] = _G.candyhub.dupeamount
-    }
-    
-    game:GetService("ReplicatedStorage"):WaitForChild("GameEvents"):WaitForChild("BuyGearStock"):FireServer(unpack(args))    
-end)
-
-category325:AddSlider('Uses: ', {10, 100, _G.candyhub.dupeamount, 1, ""}, '', function(v)
-    task.spawn(function()
-        _G.candyhub.dupeamount = v
-    end)
-end, false)
-
-category325:AddLabel('how to use:', '')
-category325:AddLabel('u need 10 watering can first', '')
-category325:AddLabel('then you buy x100', '')
-category325:AddLabel('then u rejoin', '')
-category325:AddLabel('and buy 10 watering can again', '')
-category325:AddLabel('then x100 again', '')
