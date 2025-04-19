@@ -14,7 +14,7 @@ library.settings = {
 }
 
 local Window = library:CreateWindow(
-	Vector2.new(400, 500),
+	Vector2.new(450, 550),
 	Vector2.new((workspace.CurrentCamera.ViewportSize.X / 2) - 250, (workspace.CurrentCamera.ViewportSize.Y / 2) - 250) -- ui pointing (id what i just called it lol) just dont change it.
 )
 
@@ -46,7 +46,7 @@ end
 local getseeds = function()
     local seeds = {}
     for i, item in game:GetService("Players").LocalPlayer.PlayerGui.Seed_Shop.Frame.ScrollingFrame:GetChildren() do
-        if item:FindFirstChildOfClass("Frame") then
+        if item:FindFirstChild("Main_Frame") then
             table.insert(seeds,item.Name)
         end
     end
@@ -56,11 +56,21 @@ end
 local getgears = function()
     local gears = {}
     for i, item in game:GetService("Players").LocalPlayer.PlayerGui.Gear_Shop.Frame.ScrollingFrame:GetChildren() do
-        if item:FindFirstChildOfClass("Frame") then
+        if item:FindFirstChild("Main_Frame") then
             table.insert(gears,item.Name)
         end
     end
     return gears
+end
+
+local geteaster = function()
+    local seeds = {}
+    for i, item in game:GetService("Players").LocalPlayer.PlayerGui.Easter_Shop.Frame.ScrollingFrame:GetChildren() do
+        if item:FindFirstChild("Main_Frame") then
+            table.insert(seeds,item.Name)
+        end
+    end
+    return seeds
 end
 
 local getgarden = function()
@@ -132,12 +142,16 @@ _G.candyhub = {
     salefocus = false,
 
     dupeamount = 100,
+    superdupe = false,
+    autoevent1 = false,
 }
+
 --end
 
 local maintab = Window:CreateTab('Main')
-local category5525 = maintab:AddCategory("Auto Farm",1,1)
-category5525:AddToggle('Auto Plant (W.I.P)',_G.candyhub.autoplant,'',function(v)
+
+local category5525 = maintab:AddCategory("Auto Farm (NEXT UPDATE)",1,1)
+category5525:AddToggle('Auto Plant',_G.candyhub.autoplant,'',function(v)
     task.spawn(function()
         
         _G.candyhub.autoplant = v
@@ -271,13 +285,138 @@ end)
 
 local misctab = Window:CreateTab('Misc')
 local category3525 = misctab:AddCategory("Event",1,1)
-category3525:AddToggle('Auto Collect Eggs (WIP)',false,'',function(v)
+category3525:AddToggle('Auto Give Gold Plants',false,'',function(v)
     task.spawn(function()
+        _G.candyhub.autoevent1 = v
+        if _G.candyhub.autoevent1 then
+            for i, child in game.Players.LocalPlayer.Backpack:GetChildren() do
+                if string.find(child.Name,"Gold") then
+                    local oldtool = nil
+
+                    if game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool") then
+                        oldtool = game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool")
+                        oldtool.Parent = game.Players.LocalPlayer.Backpack
+                    end
+            
+                    child.Parent = game.Players.LocalPlayer.Character
+                    local args = {[1] = "SubmitHeldPlant"}
+                    game:GetService("ReplicatedStorage"):WaitForChild("GameEvents"):WaitForChild("EasterShopService"):FireServer(unpack(args))
+                    task.wait(0.01)
+                    if oldtool ~= nil then
+                        oldtool.Parent = game.Players.LocalPlayer.Character
+                    end
+                end
+            end
+        end
     end)
 end)
 
-local category5 = misctab:AddCategory("IngameStuff",2,1)
-category5:AddButton('Enable Game Fly (F) (WIP)', function()
-    local env = getsenv(game:GetService("Players").LocalPlayer.PlayerScripts.FlyScript)
-    env.v_u_19[Enum.KeyCode.F]["TOGGLE"]()
+category3525:AddToggle('Auto DupeBuy Supers ($5-$35)',_G.candyhub.superdupe,'',function(v)
+    task.spawn(function()
+        _G.candyhub.superdupe = v
+        while _G.candyhub.superdupe and task.wait(3) do
+            for i = 1,6 do
+                local args = {[1] = "PurchaseSeed",[2] = i}
+                game:GetService("ReplicatedStorage"):WaitForChild("GameEvents"):WaitForChild("EasterShopService"):FireServer(unpack(args))
+            end
+        end
+    end)
 end)
+
+game.Players.LocalPlayer.Backpack.ChildAdded:Connect(function(child)
+    if string.find(child.Name, "Gold") and _G.candyhub.autoevent1 then
+
+        local oldtool = nil
+
+        if game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool") then
+            oldtool = game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool")
+            oldtool.Parent = game.Players.LocalPlayer.Backpack
+        end
+
+        child.Parent = game.Players.LocalPlayer.Character
+        local args = {[1] = "SubmitHeldPlant"}
+        game:GetService("ReplicatedStorage"):WaitForChild("GameEvents"):WaitForChild("EasterShopService"):FireServer(unpack(args))
+        task.wait(0.01)
+        if oldtool ~= nil then
+            oldtool.Parent = game.Players.LocalPlayer.Character
+        end
+    end
+end)
+
+local category623 = misctab:AddCategory("Easter Sniper",1,1)
+category623:AddMultiDropdown('Easter Seeds: ', geteaster(), {'Carrot'}, '', function(v)
+    _G.candyhub.selectedseeds = v
+end, true)
+category623:AddToggle('Auto Buy Selected',_G.candyhub.easterautobuy,'',function(v)
+    task.spawn(function()
+        _G.candyhub.easterautobuy = v
+        while _G.candyhub.easterautobuy and task.wait(1) do
+            for _, fruit in _G.candyhub.selectedseeds do
+                local args = {[1] = fruit}
+                game:GetService("ReplicatedStorage"):WaitForChild("GameEvents"):WaitForChild("BuySeedStock"):FireServer(unpack(args))                
+            end
+        end
+    end)
+end)
+
+local category33 = misctab:AddCategory("GUI (OP NO UNLOCK)",2,1)
+
+_G.loaded = false
+
+local enablegui = function(gui)
+    gui.Enabled = true
+    game:GetService("Lighting").Blur.Enabled = true
+    game.Players.LocalPlayer:SetAttribute("Core_FOV",65)
+    task.wait(2)
+    game.Players.LocalPlayer:SetAttribute("Core_FOV",70)
+end
+
+local disablegui = function(gui)
+    gui.Enabled = false
+    game:GetService("Lighting").Blur.Enabled = false
+    game.Players.LocalPlayer:SetAttribute("Core_FOV",70)
+end
+
+local gear = game:GetService("Players").LocalPlayer.PlayerGui.Gear_Shop.Frame.Frame.ExitButton
+local easter = game:GetService("Players").LocalPlayer.PlayerGui.Easter_Shop.Frame.Frame.ExitButton
+local seeds = game:GetService("Players").LocalPlayer.PlayerGui.Seed_Shop.Frame.Frame.ExitButton
+local quest = game:GetService("Players").LocalPlayer.PlayerGui.DailyQuests_UI.Frame.Frame.ExitButton
+
+category33:AddButton('Easter Seeds GUI', function()
+    if _G.loaded then
+        if not game:GetService("Players").LocalPlayer.PlayerGui.Easter_Shop.Enabled then
+            enablegui(game:GetService("Players").LocalPlayer.PlayerGui.Easter_Shop)
+        else
+            disablegui(game:GetService("Players").LocalPlayer.PlayerGui.Easter_Shop)
+        end
+    end
+end)
+category33:AddButton('Normal Seeds GUI', function()
+    if _G.loaded then
+        if not game:GetService("Players").LocalPlayer.PlayerGui.Seed_Shop.Enabled then
+            enablegui(game:GetService("Players").LocalPlayer.PlayerGui.Seed_Shop)
+        else
+            disablegui(game:GetService("Players").LocalPlayer.PlayerGui.Seed_Shop)
+        end
+    end
+end)
+category33:AddButton('Gear GUI', function()
+    if _G.loaded then
+        if not game:GetService("Players").LocalPlayer.PlayerGui.Gear_Shop.Enabled then
+            enablegui(game:GetService("Players").LocalPlayer.PlayerGui.Gear_Shop)
+        else
+            disablegui(game:GetService("Players").LocalPlayer.PlayerGui.Gear_Shop)
+        end
+    end
+end)
+category33:AddButton('Quest GUI', function()
+    if _G.loaded then
+        if not game:GetService("Players").LocalPlayer.PlayerGui.DailyQuests_UI.Enabled then
+            enablegui(game:GetService("Players").LocalPlayer.PlayerGui.DailyQuests_UI)
+        else
+            disablegui(game:GetService("Players").LocalPlayer.PlayerGui.DailyQuests_UI)
+        end
+    end 
+end)
+
+_G.loaded = true
