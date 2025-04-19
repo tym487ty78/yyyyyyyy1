@@ -4,7 +4,7 @@ end
 local library = loadstring(game:HttpGet('https://raw.githubusercontent.com/vateq/UILIBrewrites/refs/heads/main/hexagonuilib'))()
 library.settings = {
 	guiname = "hexagon-docs",
-	title = 'CandyHub - Grow a Garden',
+	title = 'CandyHub - Grow a Garden [v1.1.2]',
 	modal = true,
 	font = Enum.Font.SourceSans,
 	textsize = 16,
