@@ -70,7 +70,7 @@ if not CheckKey() then
     local contact = Window:CreateTab('Contact')
     local discord = contact:AddCategory('Discord',1,2)
 
-
+    --[[
     login:AddTextBox("Key", "", "Input here", function(v)
         _G.key = v
     end, true)
@@ -82,7 +82,7 @@ if not CheckKey() then
             _G.key = 'undefined.'
     end
     end)
-
+    
     login:AddButton("Get Key Link", function()
         setclipboard(tostring("https://discord.gg/EAbRQtEzWY"))
         local Notification = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Client.Lua"))()
@@ -91,7 +91,7 @@ if not CheckKey() then
             {OutlineColor = Color3.fromRGB(80, 80, 80),Time = 5, Type = "default"}
         )
     end)
-
+    ]]
     login2:AddButton("Login With Gamepass ", function()
         if game:GetService("MarketplaceService"):UserOwnsGamePassAsync(game.Players.LocalPlayer.UserId, 987985380) or game.Players.Name == "L3KPurple" then
             CheckKey(true)
