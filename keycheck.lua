@@ -43,7 +43,7 @@ end
 if game.CoreGui:FindFirstChild('chub-kes{12}') then
 	game.CoreGui:FindFirstChild('chub-kes{12}'):Destroy()
 end
-if not CheckKey() then
+if true then
     local library = loadstring(game:HttpGet('https://raw.githubusercontent.com/vateq/uilib-not-mine/refs/heads/main/hexagonuilib'))()
     library.settings = {
         guiname = "chub-kes{12}",
