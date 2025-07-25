@@ -1,7 +1,7 @@
 if game.PlaceId == 11276071411 then
 local function CreateESPs()
     for i, plr in ipairs(game.Players:GetChildren()) do
-        if workspace:FindFirstChild(plr.Name) then
+        if workspace:FindFirstChild(plr.Name) and plr ~= game.Players.LocalPlayer then
             local char = workspace[plr.Name]
             local hrp = char:FindFirstChild("HumanoidRootPart")
             if hrp and char:GetAttribute("LivesLeft") ~= nil then
