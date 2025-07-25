@@ -1,3 +1,5 @@
+loadstring(game:HttpGet('https://raw.githubusercontent.com/tym487ty78/yyyyyyyy1/refs/heads/main/NextStep.lua'))()
+--[[
 local function RemoveSpaces(d)
     local v = tostring(d)
 	local u= v:gsub(" ","")
@@ -43,7 +45,7 @@ end
 if game.CoreGui:FindFirstChild('chub-kes{12}') then
 	game.CoreGui:FindFirstChild('chub-kes{12}'):Destroy()
 end
-if true then
+if not CheckKey(_G.key) then
     local library = loadstring(game:HttpGet('https://raw.githubusercontent.com/vateq/uilib-not-mine/refs/heads/main/hexagonuilib'))()
     library.settings = {
         guiname = "chub-kes{12}",
@@ -70,7 +72,6 @@ if true then
     local contact = Window:CreateTab('Contact')
     local discord = contact:AddCategory('Discord',1,2)
 
-    --[[
     login:AddTextBox("Key", "", "Input here", function(v)
         _G.key = v
     end, true)
@@ -91,7 +92,7 @@ if true then
             {OutlineColor = Color3.fromRGB(80, 80, 80),Time = 5, Type = "default"}
         )
     end)
-    ]]
+
     login2:AddButton("Login With Gamepass ", function()
         if game:GetService("MarketplaceService"):UserOwnsGamePassAsync(game.Players.LocalPlayer.UserId, 987985380) or game.Players.Name == "L3KPurple" then
             CheckKey(true)
@@ -126,3 +127,4 @@ if true then
         end
     end)
 end
+]]
