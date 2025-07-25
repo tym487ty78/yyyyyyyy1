@@ -4,7 +4,7 @@ local function CreateESPs()
         if workspace:FindFirstChild(plr.Name) then
             local char = workspace[plr.Name]
             local hrp = char:FindFirstChild("HumanoidRootPart")
-            if hrp and hrp:FindFirstChild("TradeProximityPrompt") then
+            if hrp and char:GetAttribute("LivesLeft") ~= nil then
                 if not hrp:FindFirstChild("PlayerIndicator") then
                     local billboardGui = Instance.new("BillboardGui")
                     billboardGui.Name = "PlayerIndicator"
