@@ -1,6 +1,6 @@
 local ReGui = loadstring(game:HttpGet('https://raw.githubusercontent.com/depthso/Dear-ReGui/refs/heads/main/ReGui.lua'))()
 local Window = ReGui:TabsWindow({
-	Title = "CandyHub - Buld A Plane (Moon Event) v1.2",
+	Title = "CandyHub - Buld A Plane v1",
 	Size = UDim2.fromOffset(300, 400)
 }) --> TabSelector & WindowClass
 
