@@ -1,6 +1,6 @@
 local ReGui = loadstring(game:HttpGet('https://raw.githubusercontent.com/depthso/Dear-ReGui/refs/heads/main/ReGui.lua'))()
 local Window = ReGui:TabsWindow({
-	Title = "CandyHub - Buld A Plane v1",
+	Title = "CandyHub - Buld A Plane (Moon Event) v1.2",
 	Size = UDim2.fromOffset(300, 400)
 }) --> TabSelector & WindowClass
 
@@ -26,25 +26,24 @@ _G.candyhub = {
     autofarm = false,
     distance = 100000,
     autobuy = false,
+    lags = false
 }
+-- game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("SpectialEvents"):WaitForChild("PortalTouched"):FireServer()
 
 local Main = Window:CreateTab({Name = "Main"})
 local f1 = Main:CollapsingHeader({Title="Main"}) --> Canvas
 
 f1:Checkbox({
 	Value = false,
-	Label = "Auto Farm (W.I.P)",
+	Label = "(W.I.P)",
 	Callback = function(self, v: boolean)
         task.spawn(function()
             _G.candyhub.autofarm = v
-            --while _G.candyhub.autofarm and task.wait(0.1) do
-            --    print("")
-            --end
         end)
 	end
 })
-
-local f2 = Main:CollapsingHeader({Title="Dupe"}) --> Canvas
+--[[
+local f2 = Main:CollapsingHeader({Title="Dupe (PATCHED)"}) --> Canvas
 f2:Label({Text="the more distance give, more money you get."})
 f2:Button({
 	Text = "Complete",
@@ -73,6 +72,22 @@ f2:InputInt({
     Callback = function(self, v: number)
         _G.candyhub.distance = v
     end
+})]]
+local f64 = Main:CollapsingHeader({Title="Others"}) --> Canvas
+f64:Checkbox({
+	Value = false,
+	Label = "Spam SaveSlot 1",
+	Callback = function(self, v: boolean)
+        task.spawn(function()
+            _G.candyhub.lags = v
+            while _G.candyhub.lags and task.wait() do
+                local args = {
+                    1
+                }
+                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("BuildingEvents"):WaitForChild("use_slot"):InvokeServer(unpack(args))
+            end
+        end)
+	end
 })
 
 local f3 = Main:CollapsingHeader({Title="Auto Buy"})
@@ -115,7 +130,92 @@ b1:Button({
 	end
 })
 
+local events = Window:CreateTab({Name = "Events"})
+local me = events:CollapsingHeader({Title="Moon Event"})
+me:Checkbox({
+	Value = false,
+	Label = "Auto Farm Moon Coins",
+	Callback = function(self, v: boolean)
+        task.spawn(function()
+            _G.candyhub.moon = v
+            while _G.candyhub.moon do
+                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("LaunchEvents"):WaitForChild("Launch"):FireServer()
+                task.wait(1)
+                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("SpectialEvents"):WaitForChild("PortalTouched"):FireServer()
+                task.wait(1)
+                for i, item in pairs(game:GetService("ReplicatedStorage"):GetDescendants()) do
+                    if item:FindFirstChild("BloodMoonCoin") and item.Name ~= "Instances" then
+                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = item.CFrame + Vector3.new(0,0,0)
+                        local args = {
+                            item.Name
+                        }
+                        game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("SpectialEvents"):WaitForChild("CollectCoin"):FireServer(unpack(args))
+                        task.wait(0.02)
+                    end
+                end
+                task.wait(1)
+                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("LaunchEvents"):WaitForChild("Return"):FireServer()
+                task.wait(2)
+            end
+        end)
+	end
+})
+
+me:Checkbox({
+	Value = false,
+	Label = "Auto Buy Spins",
+	Callback = function(self, v: boolean)
+        task.spawn(function()
+            _G.candyhub.abs = v
+            while _G.candyhub.abs and task.wait(0.01) do
+                if game:GetService("Players").LocalPlayer.Important.RedMoons.Value >= 10 then
+                    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("SpinEvents"):WaitForChild("PurchaseSpin"):InvokeServer()
+                end
+            end
+        end)
+	end
+})
+
+me:Checkbox({
+	Value = false,
+	Label = "Auto Spin",
+	Callback = function(self, v: boolean)
+        task.spawn(function()
+            _G.candyhub.abs = v
+            while _G.candyhub.abs and task.wait(0.01) do
+                if game:GetService("Players").LocalPlayer.replicated_data.available_spins.Value >= 1 then
+                    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("SpinEvents"):WaitForChild("PerformSpin"):InvokeServer()
+                end
+            end
+        end)
+	end
+})
+
 --[[
+
+_G.automoon = not _G.automoon
+while _G.automoon do
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("LaunchEvents"):WaitForChild("Launch"):FireServer()
+task.wait(1)
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("SpectialEvents"):WaitForChild("PortalTouched"):FireServer()
+task.wait(1)
+for _, obj in pairs(game:GetDescendants()) do
+    if obj:FindFirstChild("BloodMoonCoin") and obj.Name ~= "Instances" then
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = obj.CFrame + Vector3.new(0,0,0)
+        local args = {
+            obj.Name
+        }
+        game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("SpectialEvents"):WaitForChild("CollectCoin"):FireServer(unpack(args))
+
+        task.wait(0.1)
+    end
+end
+task.wait(1)
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("LaunchEvents"):WaitForChild("Return"):FireServer()
+task.wait(2)
+end
+
+
 for _, it in workspace.Islands.Island2.PlacedBlocks:GetChildren() do
 local i = it.PrimaryPart
 local args = {
