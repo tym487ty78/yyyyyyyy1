@@ -33,13 +33,13 @@ local f1 = Main:CollapsingHeader({Title="Main"}) --> Canvas
 
 f1:Checkbox({
 	Value = false,
-	Label = "Auto Farm",
+	Label = "Auto Farm (W.I.P)",
 	Callback = function(self, v: boolean)
         task.spawn(function()
             _G.candyhub.autofarm = v
-            while _G.candyhub.autofarm and task.wait(0.1) do
-                print("")
-            end
+            --while _G.candyhub.autofarm and task.wait(0.1) do
+            --    print("")
+            --end
         end)
 	end
 })
