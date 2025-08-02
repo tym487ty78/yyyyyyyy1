@@ -16,6 +16,8 @@ elseif game.PlaceId == 126884695634066 then
 	loadstring(game:HttpGet('https://raw.githubusercontent.com/tym487ty78/yyyyyyyy1/refs/heads/main/growagarden.lua'))()
 elseif game.PlaceId == 301549746 then
 	loadstring(game:HttpGet('https://raw.githubusercontent.com/tym487ty78/yyyyyyyy1/refs/heads/main/cbr.lua'))()
+elseif game.PlaceId == 137925884276740 then
+	loadstring(game:HttpGet('https://raw.githubusercontent.com/tym487ty78/yyyyyyyy1/refs/heads/main/bap.lua'))()
 else
 	print('game not supported')
 end
