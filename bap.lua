@@ -132,34 +132,74 @@ b1:Button({
 
 local events = Window:CreateTab({Name = "Events"})
 local me = events:CollapsingHeader({Title="Moon Event"})
+local mi = events:CollapsingHeader({Title="Stats",Collapsed=false});mi:SetVisible(false)
+
+local abs = function(num)
+    if num < 0 then
+        return -num
+    end
+    return num
+end
+
+local ml1 = mi:Label({Text = "Money Earned: 0"})
+local ml2 = mi:Label({Text = "Moon Coins Earned: 0"})
+local ml3 = mi:Label({Text = "Propeller Blood: 0"})
+local ml4 = mi:Label({Text = "Wing Blood: 0"})
+local ml5 = mi:Label({Text = "Time: 0h 0m 0s"})
+
 me:Checkbox({
 	Value = false,
 	Label = "Auto Farm Moon Coins",
 	Callback = function(self, v: boolean)
         task.spawn(function()
             _G.candyhub.moon = v
+            mi:SetVisible(_G.candyhub.moon)
+
+            if _G.candyhub.moon then
+                local money = game:GetService("Players").LocalPlayer.leaderstats.Cash.Value
+                local moons = game:GetService("Players").LocalPlayer.Important.RedMoons.Value
+                local propeller_blood = game:GetService("Players").LocalPlayer.Important.Inventory.propeller_blood.Value
+                local wing_blood = game:GetService("Players").LocalPlayer.Important.Inventory.wing_blood.Value
+                local runnin= math.floor(tick())
+
+                task.spawn(function()
+                    while _G.candyhub.moon and task.wait(0.1) do
+                        ml1.Text = ("Money Earned: " .. tostring(abs(money-game:GetService("Players").LocalPlayer.leaderstats.Cash.Value)))
+                        ml2.Text = ("Moon Coins Earned: " .. tostring(abs(moons-game:GetService("Players").LocalPlayer.Important.RedMoons.Value)))
+                        ml3.Text = ("Propeller Blood: " .. tostring(abs(propeller_blood-game:GetService("Players").LocalPlayer.Important.Inventory.propeller_blood.Value)) .. "(" .. tostring(game:GetService("Players").LocalPlayer.Important.Inventory.propeller_blood.Value) .. ")")
+                        ml4.Text = ("Wing Blood: " .. tostring(abs(wing_blood-game:GetService("Players").LocalPlayer.Important.Inventory.wing_blood.Value)) .. "(" .. tostring(game:GetService("Players").LocalPlayer.Important.Inventory.wing_blood.Value) .. ")")
+                        ml5.Text = ("Time: " .. tostring(math.floor((math.floor(tick())-runnin)/3600)) .. "h " .. tostring(math.floor(((math.floor(tick())-runnin)%3600)/60)) .. "m " .. tostring(math.floor((math.floor(tick())-runnin)%60)) .. "s")
+                    end
+                end)
+            end
+
             while _G.candyhub.moon do
                 game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("LaunchEvents"):WaitForChild("Launch"):FireServer()
-                task.wait(1)
+                task.wait(0.8)
                 game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("SpectialEvents"):WaitForChild("PortalTouched"):FireServer()
                 task.wait(1)
-                for i, item in pairs(game:GetService("ReplicatedStorage"):GetDescendants()) do
-                    if item:FindFirstChild("BloodMoonCoin") and item.Name ~= "Instances" then
-                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = item.CFrame + Vector3.new(0,0,0)
-                        local args = {
-                            item.Name
-                        }
-                        game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("SpectialEvents"):WaitForChild("CollectCoin"):FireServer(unpack(args))
-                        task.wait(0.02)
+                for i = 1,5 do
+                    for i, item in pairs(game:GetService("ReplicatedStorage"):GetDescendants()) do
+                        if item:FindFirstChild("BloodMoonCoin") and item.Name ~= "Instances" then
+                            i+=1
+                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = item.CFrame + Vector3.new(0,0,0)
+                            local args = {
+                                item.Name
+                            }
+                            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("SpectialEvents"):WaitForChild("CollectCoin"):FireServer(unpack(args))
+                            task.wait(0.01)
+                        end
                     end
                 end
-                task.wait(1)
+
+                task.wait(0.5)
                 game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("LaunchEvents"):WaitForChild("Return"):FireServer()
                 task.wait(2)
             end
         end)
 	end
 })
+
 
 me:Checkbox({
 	Value = false,
@@ -186,6 +226,28 @@ me:Checkbox({
                 if game:GetService("Players").LocalPlayer.replicated_data.available_spins.Value >= 1 then
                     game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("SpinEvents"):WaitForChild("PerformSpin"):InvokeServer()
                 end
+            end
+        end)
+	end
+})
+
+local misc = Window:CreateTab({Name = "Misc"})
+
+misc:Checkbox({
+	Value = false,
+	Label = "Anti AFK",
+	Callback = function(self, v: boolean)
+        task.spawn(function()
+            _G.candyhub.afk = v
+            if _G.candyhub.afk then
+                local vu = game:GetService("VirtualUser")
+                game:GetService("Players").LocalPlayer.Idled:connect(function()
+                    vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+                    wait(1)
+                    vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+                end)
+            else
+                game:GetService("Players").LocalPlayer.Idled:Disconnect()
             end
         end)
 	end
