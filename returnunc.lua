@@ -46,22 +46,6 @@ local function test(name, aliases, callback)
 	end)
 end
 
--- Header and summary
-
-task.defer(function()
-	repeat task.wait() until running == 0
-
-	local rate = math.round(passes / (passes + fails) * 100)
-	local outOf = passes .. " out of " .. (passes + fails)
-
-	print("\n")
-
-	print("UNC Summary")
-	print("✅ Tested with a " .. rate .. "% success rate (" .. outOf .. ")")
-	print("⛔ " .. fails .. " tests failed")
-	print("⚠️ " .. undefined .. " globals are missing aliases")
-end)
-
 -- Cache
 
 test("cache.invalidate", {}, function()
@@ -860,6 +844,6 @@ test("WebSocket.connect", {}, function()
 	ws:Close()
 end)
 
-local prc = (passes / running)*100
+local rate = math.round(passes / (passes + fails) * 100)
 
-return prc
+return rate
