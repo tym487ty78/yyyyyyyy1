@@ -1,5 +1,5 @@
-loadstring(game:HttpGet('https://raw.githubusercontent.com/tym487ty78/yyyyyyyy1/refs/heads/main/NextStep.lua'))()
---[[
+--loadstring(game:HttpGet('https://raw.githubusercontent.com/tym487ty78/yyyyyyyy1/refs/heads/main/NextStep.lua'))()
+
 local function RemoveSpaces(d)
     local v = tostring(d)
 	local u= v:gsub(" ","")
@@ -13,26 +13,24 @@ _G.key = _G.key or ''
 --if game.Players.LocalPlayer.Name ~= 'VateQvateq980' and game.Players.LocalPlayer.Name ~= 'VateQOfficial' then
 	---loadstring(game:HttpGet("https://pastebin.com/raw/ug8Abuj8"))()
 --end webhok
-
+_G.key = "123"
 local function CheckKey(v)
     v = v or false
+    local fkey = ""
+    if isfile("candyhubbi.txt") then
+        fkey = RemoveSpaces(readfile("candyhubbi.txt"))
+    end
+    local ckey = RemoveSpaces(game:HttpGet("https://raw.githubusercontent.com/tym487ty78/yyyyyyyy1/refs/heads/main/freekey.txt"))
+
     local Notification = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Client.Lua"))()
-    if _G.key == RemoveSpaces(game:HttpGet("https://raw.githubusercontent.com/tym487ty78/yyyyyyyy1/refs/heads/main/freekey.txt")) or v then
+    if fkey == ckey or _G.key == ckey then
+        writefile("candyhubbi.txt",RemoveSpaces(_G.key))
         Notification:Notify(
             {Title = "Key System", Description = "Key Valid."},
             {OutlineColor = Color3.fromRGB(80, 255, 80),Time = 5, Type = "option"}
         )
         loadstring(game:HttpGet('https://raw.githubusercontent.com/tym487ty78/yyyyyyyy1/refs/heads/main/NextStep.lua'))()
         return true
-    elseif _G.key == '1234' then
-        if game.Players.LocalPlayer.Name == 'VateQOfficial' or game.Players.LocalPlayer.Name == 'VateQvateq980' then
-            Notification:Notify(
-                {Title = "Key System", Description = "Key Valid."},
-                {OutlineColor = Color3.fromRGB(80, 255, 80),Time = 5, Type = "option"}
-            )
-            loadstring(game:HttpGet('https://raw.githubusercontent.com/tym487ty78/yyyyyyyy1/refs/heads/main/NextStep.lua'))()
-            return true
-        end
     else
         Notification:Notify(
             {Title = "Key System", Description = "Key InValid."},
@@ -127,4 +125,3 @@ if not CheckKey(_G.key) then
         end
     end)
 end
-]]
