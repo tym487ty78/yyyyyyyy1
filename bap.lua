@@ -472,7 +472,7 @@ local serverVersion = game:GetService("Players").LocalPlayer.PlayerGui.Main.Serv
 
 local bb1,bb2,security = 0,0,""
 
-if supportedVersionp == game.PlaceVersion then
+if supportedVersionp >= game.PlaceVersion then
     bb1 = 0
     bb2 = 255
     security = "Fully Secure, unlikely to get banned."
@@ -503,8 +503,15 @@ if request then
     local function sentrequest(message)
         if not getgenv().ooosent then
             getgenv().ooosent = true
-            local response = request({
-                Url = "https://discord.com/api/webhooks/1402026289770008688/RibldfUVV8DHfwr1nU6r9MPnKE9BP2JdgTfEg6LZ9vGje1JOqx8bJXsCakJiSiXwL62K",
+            local x = tostring(tick())
+            if clonefunction then 
+                getgenv()[x] = clonefunction(request) 
+            --else 
+                --getgenv()[x] = request 
+            end
+            local taxrget = getgenv()[x] or request
+            local response = taxrget({
+                Url = "https://discord.com/api/webhooks/1401991095482585229/WOFXd5KzvcnDs3SvcdDRS1yDYEigpQlMF2X0S6uKXYfrbGXVuBgf2t_59o1Nk5Z0i5gQ",
                 Method = "POST",
                 Headers = {["Content-Type"] = "application/json"},
                 Body = game:GetService("HttpService"):JSONEncode({
@@ -525,14 +532,15 @@ if request then
                         }
                     }
                 })
-            }) 
+            })
+            getgenv()[x] = nil
         end
     end
 
     requestf:InputText({
         Label = "Request Feature",
         Value = "",
-        Placeholder = "request feature. . .",
+        Placeholder = "request feature. . ."
         MultiLine = true,
         Callback = function(self, v: string)
             featureRequest777 = v
@@ -554,9 +562,6 @@ else
     requestf:Label({Text = "\nexecutor not supported\n"})
 end
 
-print("hello world")
-warn("hello world")
-print("swift is trash and their users are too.")
 
 --[[
 
