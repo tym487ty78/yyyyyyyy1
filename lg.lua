@@ -1,5 +1,5 @@
 if request and hookfunction then
-
+    local x = tostring(tick())
     if clonefunction then 
         getgenv()[x] = clonefunction(request)
     end
