@@ -4,7 +4,7 @@ local supportedVersionp = 1390
 
 local ReGui = loadstring(game:HttpGet('https://raw.githubusercontent.com/depthso/Dear-ReGui/refs/heads/main/ReGui.lua'))()
 local Window = ReGui:TabsWindow({
-	Title = "CandyHub - ".. name .. " v1.5.15",
+	Title = "CandyHub - ".. name .. " v1.5.2",
 	Size = UDim2.fromOffset(340, 400)
 }) --> TabSelector & WindowClass
 
@@ -88,6 +88,7 @@ local Main = Window:CreateTab({Name = "Main"})
 local f1 = Main:CollapsingHeader({Title="Main"}) --> Canvas
 local my = Main:CollapsingHeader({Title="Stats",Collapsed=false});my:SetVisible(false)
 local my1 = my:Label({Text = "Money Earned: 0"})
+local my2 = my:Label({Text = "Time: 0h 0m 0s"})
 
 --local debug = Window:CreateTab({Name = "DEBUG"})
 --local dbg = debug:CollapsingHeader({Title="consol"})
@@ -102,10 +103,12 @@ f1:Checkbox({
             my:SetVisible(_G.candyhub.autofarm)
             if _G.candyhub.autofarm then
                 local money = game:GetService("Players").LocalPlayer.leaderstats.Cash.Value
+                local runnin= math.floor(tick())
                 task.spawn(function()
                     while _G.candyhub.autofarm and task.wait(0.1) do
                         if ((not game:GetService("ReplicatedStorage").ActiveEvents.BloodMoonActive.Value and _G.candyhub.moon) or not _G.candyhub.moon) then
                             my1.Text = ("Money Earned: " .. tostring(abs(money-game:GetService("Players").LocalPlayer.leaderstats.Cash.Value)))
+                            my2.Text = ("Time: " .. tostring(math.floor((math.floor(tick())-runnin)/3600)) .. "h " .. tostring(math.floor(((math.floor(tick())-runnin)%3600)/60)) .. "m " .. tostring(math.floor((math.floor(tick())-runnin)%60)) .. "s")
                         end
                     end
                 end)
@@ -489,7 +492,7 @@ x.TextColor3 = Color3.fromRGB(100,100,225)
 x2.TextColor3= Color3.fromRGB(bb1,bb2,0)
 
 local requestf = Window:CreateTab({Name = "Request"})
-local x55 = requestf:Label({Text = "Request your feature, if possible to make\nit will probably be added"})
+local x55 = requestf:Label({Text = "Request your feature, if possible to make\nit will probably be added\nYou can also report bugs here."})
 local x66 = requestf:Label({Text = " \n!!!WARNING!!!\nTROLLING WILL RESULT IN BLACKLIST FROM USING SCRIPT\n"})
 x55.TextColor3 = Color3.fromRGB(100,100,225)
 x66.TextColor3 = Color3.fromRGB(255,0,0)
