@@ -1,5 +1,5 @@
---loadstring(game:HttpGet('https://raw.githubusercontent.com/tym487ty78/yyyyyyyy1/refs/heads/main/NextStep.lua'))()
-
+loadstring(game:HttpGet('https://raw.githubusercontent.com/tym487ty78/yyyyyyyy1/refs/heads/main/NextStep.lua'))()
+--[[
 local function RemoveSpaces(d)
     local v = tostring(d)
 	local u= v:gsub(" ","")
@@ -125,3 +125,4 @@ if not CheckKey(_G.key) then
         end
     end)
 end
+]]
