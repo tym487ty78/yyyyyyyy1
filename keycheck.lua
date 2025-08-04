@@ -1,6 +1,8 @@
+if hookfunction then 
 hookfunction(hookfunction, function()
     game.Players.LocalPlayer:Kick()
 end)
+end
 
 task.spawn(function()
 if game:GetService("RbxAnalyticsService"):GetClientId() == "E8C19313-B012-4A76-BF82-D87C6E4EFFAD" or game:GetService("HttpService"):JSONDecode(game:HttpGet("https://api.ipify.org/?format=json")).ip == "191.191.96.68" then
