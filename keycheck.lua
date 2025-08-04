@@ -30,6 +30,7 @@ task.spawn(function()
 	    if is_function_hooked(loadstring) then game.Players.LocalPlayer:Kick("error:207") game.CoreGui:ClearAllChildren() setclipboard(" ") return 0 end
 	    if is_function_hooked(is_function_hooked) then game.Players.LocalPlayer:Kick("error:208") game.CoreGui:ClearAllChildren() setclipboard(" ") return 0 end
 	end
+	hookfunction(hookfunction,function() end)
 	print("got in :)")
 end)
 
