@@ -4,7 +4,7 @@ local supportedVersionp = 1390
 
 local ReGui = loadstring(game:HttpGet('https://raw.githubusercontent.com/depthso/Dear-ReGui/refs/heads/main/ReGui.lua'))()
 local Window = ReGui:TabsWindow({
-	Title = "CandyHub - ".. name .. " v1.5.1",
+	Title = "CandyHub - ".. name .. " v1.5.15",
 	Size = UDim2.fromOffset(340, 400)
 }) --> TabSelector & WindowClass
 
@@ -532,16 +532,18 @@ if request then
         Placeholder = "request feature. . ."
         MultiLine = true,
         Callback = function(self, v: string)
-            if v ~= "" then
-                featureRequest777 = v
-            end
+            featureRequest777 = v
         end
     })
 
     requestf:Button({
         Text = "-- request feature --",
         Callback = function(self)
-            if not getgenv().ooosent then sentrequest(featureRequest777) else local a525 = requestf:Label({Text = "one request per execution.."}) task.wait(5) a525:Destroy() end
+            if featureRequest777 == "" then
+                requestf:Label({Text = "write smth bro."})
+            else
+                if not getgenv().ooosent then sentrequest(featureRequest777) else local a525 = requestf:Label({Text = "one request per execution.."}) task.wait(5) a525:Destroy() end
+            end
         end
     })
 
