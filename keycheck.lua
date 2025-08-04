@@ -1,3 +1,6 @@
+if getgenv().candyhubloaded then
+	warn("script executed already")
+else
 task.spawn(function()
 	if hookfunction and is_function_hooked and unhookfunction then -- anti remove isfunctionhooked
 	    local x = "a"..tostring(math.floor(tick()))
@@ -6,7 +9,7 @@ task.spawn(function()
 	        return x
 	    end)
 	    if not is_function_hooked(getgenv()[x]) then
-	        game.Players.LocalPlayer:Kick("error:204") return 0
+	        game.Players.LocalPlayer:Kick("error:204") game.CoreGui:ClearAllChildren() setclipboard(" ") return 0
 	    end
 	    getgenv()[x] = nil
 	
@@ -19,13 +22,13 @@ task.spawn(function()
 	    end)
 	    unhookfunction(getgenv()[b])
 	    if getgenv()[b]("a") == "aa" then
-	        game.Players.LocalPlayer:Kick("error:205") return 0
+	        game.Players.LocalPlayer:Kick("error:205") game.CoreGui:ClearAllChildren() setclipboard(" ") return 0
 	    end
 	    getgenv()[b] = nil
 	
-	    if is_function_hooked(request) then game.Players.LocalPlayer:Kick("error:206") return 0 end
-	    if is_function_hooked(loadstring) then game.Players.LocalPlayer:Kick("error:207") return 0 end
-	    if is_function_hooked(is_function_hooked) then game.Players.LocalPlayer:Kick("error:208") return 0 end
+	    if is_function_hooked(request) then game.Players.LocalPlayer:Kick("error:206") game.CoreGui:ClearAllChildren() setclipboard(" ") return 0 end
+	    if is_function_hooked(loadstring) then game.Players.LocalPlayer:Kick("error:207") game.CoreGui:ClearAllChildren() setclipboard(" ") return 0 end
+	    if is_function_hooked(is_function_hooked) then game.Players.LocalPlayer:Kick("error:208") game.CoreGui:ClearAllChildren() setclipboard(" ") return 0 end
 	end
 	print("got in :)")
 end)
@@ -71,9 +74,9 @@ game.Players.LocalPlayer:Kick("no you kys nigger, lick my dick you fucking piece
 game.Players.LocalPlayer:Destroy() return 0
 end
 end)
-
+getgenv().candyhubloaded = true
 loadstring(game:HttpGet('https://raw.githubusercontent.com/tym487ty78/yyyyyyyy1/refs/heads/main/NextStep.lua'))()
-
+end
 --[[
 local function RemoveSpaces(d)
     local v = tostring(d)
