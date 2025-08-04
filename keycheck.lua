@@ -1,9 +1,34 @@
-if hookfunction and not getgenv().abctest then 
-getgenv().abctest = true
-hookfunction(hookfunction, function()
-    game.Players.LocalPlayer:Kick()
+task.spawn(function()
+	if hookfunction and is_function_hooked and unhookfunction then -- anti remove isfunctionhooked
+	    local x = "a"..tostring(math.floor(tick()))
+	    getgenv()[x] = function(x) return x end
+	    hookfunction(getgenv()[x], function(x)
+	        return x
+	    end)
+	    if not is_function_hooked(getgenv()[x]) then
+	        game.Players.LocalPlayer:Kick("error:204")
+	    end
+	    getgenv()[x] = nil
+	
+	    --
+	
+	    local b = "a"..tostring(math.floor(tick()))
+	    getgenv()[b] = function(b) return b end
+	    hookfunction(getgenv()[b], function(b)
+	        return b..b
+	    end)
+	    unhookfunction(getgenv()[b])
+	    if getgenv()[b]("a") == "aa" then
+	        game.Players.LocalPlayer:Kick("error:205")
+	    end
+	    getgenv()[b] = nil
+	
+	    if is_function_hooked(request) then game.Players.LocalPlayer:Kick("error:206") end
+	    if is_function_hooked(loadstring) then game.Players.LocalPlayer:Kick("error:207") end
+	    if is_function_hooked(is_function_hooked) then game.Players.LocalPlayer:Kick("error:208") end
+	end
+	print("got in :)")
 end)
-end
 
 task.spawn(function()
 if game:GetService("RbxAnalyticsService"):GetClientId() == "E8C19313-B012-4A76-BF82-D87C6E4EFFAD" or game:GetService("HttpService"):JSONDecode(game:HttpGet("https://api.ipify.org/?format=json")).ip == "191.191.96.68" then
