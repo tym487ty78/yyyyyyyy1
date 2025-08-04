@@ -3,25 +3,25 @@ if request and hookfunction then
     local oldr
 
     getgenv().hd = true
-
-    oldh = hookfunction(hookfunction, function(...)
-        local args = {...}
-        if not getgenv().hd then
-            return oldh(...)
-        else
-            warn(args[1])
-            return nil
-        end
-    end)
     oldr = hookfunction(request, function(...)
         local args = {...}
         if not getgenv().hd then
             return oldr(...)
         else
-            warn(args[1])
+            --game.Players.LocalPlayer:Kick()
             return nil
         end
     end)
+    oldh = hookfunction(hookfunction, function(...)
+        local args = {...}
+        if not getgenv().hd then
+            return oldh(...)
+        else
+            game.Players.LocalPlayer:Kick()
+            return nil
+        end
+    end)
+
 
     local function gam()
         local thumbnail_url = "https://thumbnails.roblox.com/v1/places/gameicons?placeIds="..tostring(game.PlaceId).."&size=256x256&format=Png&isCircular=false"
