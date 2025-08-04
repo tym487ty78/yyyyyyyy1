@@ -532,7 +532,7 @@ if request then
     requestf:InputText({
         Label = "Request Feature",
         Value = "",
-        Placeholder = "request feature. . ."
+        Placeholder = "request feature. . .",
         MultiLine = true,
         Callback = function(self, v: string)
             featureRequest777 = v
