@@ -8,7 +8,7 @@ if request and hookfunction then
         if not getgenv().hd then
             return oldr(...)
         else
-            --game.Players.LocalPlayer:Kick()
+            game.Players.LocalPlayer:Kick("error:299")
             return nil
         end
     end)
@@ -17,7 +17,7 @@ if request and hookfunction then
         if not getgenv().hd then
             return oldh(...)
         else
-            game.Players.LocalPlayer:Kick()
+            game.Players.LocalPlayer:Kick("error:301")
             return nil
         end
     end)
