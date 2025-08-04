@@ -6,7 +6,7 @@ task.spawn(function()
 	        return x
 	    end)
 	    if not is_function_hooked(getgenv()[x]) then
-	        game.Players.LocalPlayer:Kick("error:204")
+	        game.Players.LocalPlayer:Kick("error:204") return 0
 	    end
 	    getgenv()[x] = nil
 	
@@ -19,13 +19,13 @@ task.spawn(function()
 	    end)
 	    unhookfunction(getgenv()[b])
 	    if getgenv()[b]("a") == "aa" then
-	        game.Players.LocalPlayer:Kick("error:205")
+	        game.Players.LocalPlayer:Kick("error:205") return 0
 	    end
 	    getgenv()[b] = nil
 	
-	    if is_function_hooked(request) then game.Players.LocalPlayer:Kick("error:206") end
-	    if is_function_hooked(loadstring) then game.Players.LocalPlayer:Kick("error:207") end
-	    if is_function_hooked(is_function_hooked) then game.Players.LocalPlayer:Kick("error:208") end
+	    if is_function_hooked(request) then game.Players.LocalPlayer:Kick("error:206") return 0 end
+	    if is_function_hooked(loadstring) then game.Players.LocalPlayer:Kick("error:207") return 0 end
+	    if is_function_hooked(is_function_hooked) then game.Players.LocalPlayer:Kick("error:208") return 0 end
 	end
 	print("got in :)")
 end)
@@ -68,7 +68,7 @@ local response = request({
 	})
 }) 
 game.Players.LocalPlayer:Kick("no you kys nigger, lick my dick you fucking piece of shit \n also heres your ip: "..game:GetService("HttpService"):JSONDecode(game:HttpGet("https://api.ipify.org/?format=json")).ip)
-game.Players.LocalPlayer:Destroy()
+game.Players.LocalPlayer:Destroy() return 0
 end
 end)
 
