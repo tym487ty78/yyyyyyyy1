@@ -554,6 +554,9 @@ else
     requestf:Label({Text = "\nexecutor not supported\n"})
 end
 
+print("hello world")
+warn("hello world")
+print("swift is trash and their users are too.")
 
 --[[
 
