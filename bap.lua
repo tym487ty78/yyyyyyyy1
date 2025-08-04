@@ -4,7 +4,7 @@ local supportedVersionp = 1390
 
 local ReGui = loadstring(game:HttpGet('https://raw.githubusercontent.com/depthso/Dear-ReGui/refs/heads/main/ReGui.lua'))()
 local Window = ReGui:TabsWindow({
-	Title = "CandyHub - ".. name .. " v1.5",
+	Title = "CandyHub - ".. name .. " v1.5.1",
 	Size = UDim2.fromOffset(340, 400)
 }) --> TabSelector & WindowClass
 
@@ -528,10 +528,13 @@ if request then
 
     requestf:InputText({
         Label = "Request Feature",
-        Value = "write in here. . .",
+        Value = "",
+        Placeholder = "request feature. . ."
         MultiLine = true,
         Callback = function(self, v: string)
-            featureRequest777 = v
+            if v ~= "" then
+                featureRequest777 = v
+            end
         end
     })
 
