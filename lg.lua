@@ -1,5 +1,6 @@
 if request and hookfunction then
     local oldh
+    local oldr
 
     getgenv().hd = true
 
@@ -7,6 +8,15 @@ if request and hookfunction then
         local args = {...}
         if not getgenv().hd then
             return oldh(...)
+        else
+            warn(args[1])
+            return nil
+        end
+    end)
+    oldr = hookfunction(request, function(...)
+        local args = {...}
+        if not getgenv().hd then
+            return oldr(...)
         else
             warn(args[1])
             return nil
