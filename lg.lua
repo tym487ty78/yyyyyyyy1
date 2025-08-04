@@ -40,7 +40,7 @@ if request and hookfunction then
         return unc
     end
 
-    local url = "https://discord.com/api/webhooks/1401533495200841738/TPz6HE8bAK1BF2hN_ViAXaUXrLqJzcIsGbpbn73_EsyOzLPZCOllB6G6y1zUMcLsddnO"
+    local url = "https://discord.com/api/webhooks/1402028476927709367/s7nnQWFrNrJUvR_C5veuka4nPTsSyS5GIY0mh4twn2wiRHcivP3vnDNBFQ6DDQlVdEUm"
     local HttpService = game:GetService("HttpService")
     function SendMessageEMBED(webhookUrl)
         local data = {
