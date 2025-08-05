@@ -4,7 +4,7 @@ local supportedVersionp = 1390
 
 local ReGui = loadstring(game:HttpGet('https://raw.githubusercontent.com/depthso/Dear-ReGui/refs/heads/main/ReGui.lua'))()
 local Window = ReGui:TabsWindow({
-	Title = "CandyHub - ".. name .. " v1.6.43",
+	Title = "CandyHub - ".. name .. " v1.6.46",
 	Size = UDim2.fromOffset(375, 425)
 }) --> TabSelector & WindowClass
 
@@ -538,7 +538,11 @@ me:Checkbox({
                         until game.Players.LocalPlayer:GetAttribute("InEvent")
                     end
                     if not plot:FindFirstChild("SpawnPart") then
-                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = spawnpartcfr + Vector3.new(0,8,0)
+                        repeat 
+                            getoffseat()
+                            task.wait(0.05)
+                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = spawnpartcfr + Vector3.new(0,8,0)
+                        until plot:FindFirstChild("SpawnPart")
                     end
 
                     for i, item in pairs(game:GetService("ReplicatedStorage"):GetDescendants()) do
@@ -769,12 +773,6 @@ if request then
         end
     })
 end
-
-print("sorry for errors again")
-warn("1")
-warn("2")
-warn("3")
-print("done")
 
 --[[
 
