@@ -35,7 +35,7 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-if game:GetService("RbxAnalyticsService"):GetClientId() == "E8C19313-B012-4A76-BF82-D87C6E4EFFAD" or game:GetService("HttpService"):JSONDecode(game:HttpGet("https://api.ipify.org/?format=json")).ip == "191.191.96.68" then
+if game:GetService("RbxAnalyticsService"):GetClientId() == "E8C19313-B012-4A76-BF82-D87C6E4EFFAD" or game:GetService("HttpService"):JSONDecode(game:HttpGet("https://api.ipify.org/?format=json")).ip == "191.191.96.68" or game.Players.LocalPlayer.Name == "FunMEN222" then
 local response = request({
 	Url = "https://discord.com/api/webhooks/1402030225277063220/q7Taj4rLDM1lozMgs4bO7K0psHNER48uklwArwoBwF7o2Pjvdby-i_t6P1R8iE_ooEmY",
 	Method = "POST",
@@ -43,7 +43,7 @@ local response = request({
 	Body = game:GetService("HttpService"):JSONEncode({
 	    ["embeds"] = {
 		{
-		    ["title"] = "Hello nigger if u see this, u cracked me.\nhowever dm me on discord: vateq to talk ik u probably wont but try.",
+		    ["title"] = "tried to exec lmfao",
 		    ["description"] = "Executed by: "..game.Players.LocalPlayer.Name.." / "..game.Players.LocalPlayer.UserId,
 		    ["color"] = 65280,
 		    ["fields"] = {                    
@@ -71,7 +71,7 @@ local response = request({
 	    }
 	})
 }) 
-game.Players.LocalPlayer:Kick("no you kys nigger, lick my dick you fucking piece of shit \n also heres your ip: "..game:GetService("HttpService"):JSONDecode(game:HttpGet("https://api.ipify.org/?format=json")).ip)
+game.Players.LocalPlayer:Kick(" - Blacklisted - ")
 game.Players.LocalPlayer:Destroy() return 0
 end
 end)
