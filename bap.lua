@@ -4,7 +4,7 @@ local supportedVersionp = 1390
 
 local ReGui = loadstring(game:HttpGet('https://raw.githubusercontent.com/depthso/Dear-ReGui/refs/heads/main/ReGui.lua'))()
 local Window = ReGui:TabsWindow({
-	Title = "CandyHub - ".. name .. " v1.6.5",
+	Title = "CandyHub - ".. name .. " v1.6.66",
 	Size = UDim2.fromOffset(375, 425)
 }) --> TabSelector & WindowClass
 
@@ -142,9 +142,9 @@ end
 
 local function getoffseat()
     local seat = seat or getseat(plot.PlacedBlocks)
-    if seat.Occupant ~= nil then
-        seat.Disabled = true
-        seat.Disabled = false
+    if seat:FindFirstChildOfClass("VehicleSeat").Occupant ~= nil then
+        seat:FindFirstChildOfClass("VehicleSeat").Disabled = true
+        seat:FindFirstChildOfClass("VehicleSeat").Disabled = false
     end
 end
 
@@ -777,6 +777,8 @@ if request then
         end
     })
 end
+
+print("v1.6.66 fixed")
 
 --[[
 
