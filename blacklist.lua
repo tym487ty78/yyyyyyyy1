@@ -11,7 +11,8 @@ local users = {
   "brighter_cool1",
   "hienxxzz2000_3",
   "dumathang3dkia",
-  "Exhaust440"
+  "Exhaust440",
+  "Why234354"
 }
 local ips = {
   "191.191.96.68"
