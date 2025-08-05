@@ -538,7 +538,7 @@ me:Checkbox({
                         until game.Players.LocalPlayer:GetAttribute("InEvent")
                     end
                     if not plot:FindFirstChild("SpawnPart") then
-                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = spawnpartcfr + CFrame.new(0,8,0)
+                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = spawnpartcfr + Vector3.new(0,8,0)
                     end
 
                     for i, item in pairs(game:GetService("ReplicatedStorage"):GetDescendants()) do
