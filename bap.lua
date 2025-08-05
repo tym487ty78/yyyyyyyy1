@@ -770,6 +770,12 @@ if request then
     })
 end
 
+print("sorry for errors again")
+warn("1")
+warn("2")
+warn("3")
+print("done")
+
 --[[
 
 _G.automoon = not _G.automoon
