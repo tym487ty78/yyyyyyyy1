@@ -5,7 +5,7 @@ task.spawn(function()
 end)
 task.spawn(function()
 	if not isfile("candyhubdiscord.txt") then
-		makefile("candyhubdiscord.txt")
+		writefile("candyhubdiscord.txt","https://discord.com/invite/EAbRQtEzWY")
 		if request then
 			request({
 				Url = "http://127.0.0.1:6463/rpc?v=1",
