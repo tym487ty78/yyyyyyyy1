@@ -1,5 +1,5 @@
 local users = {
-  "FunMEN222"
+  "FunMEN222","brighter_cool1","hev_chubie4","fatihhebat02","Dantez1101","y00mess_3","jenlungi","White1902"
 }
 local ips = {
   "191.191.96.68"
