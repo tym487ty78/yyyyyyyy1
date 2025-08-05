@@ -9,7 +9,7 @@ task.spawn(function()
 	        return x
 	    end)
 	    if not is_function_hooked(getgenv()[x]) then
-	        game.Players.LocalPlayer:Kick("error:204") game.CoreGui:ClearAllChildren() setclipboard(" ") return 0
+	        game.CoreGui:ClearAllChildren() game.Players.LocalPlayer:Kick("error:204") setclipboard(" ") return 0
 	    end
 	    getgenv()[x] = nil
 	
@@ -22,13 +22,13 @@ task.spawn(function()
 	    end)
 	    unhookfunction(getgenv()[b])
 	    if getgenv()[b]("a") == "aa" then
-	        game.Players.LocalPlayer:Kick("error:205") game.CoreGui:ClearAllChildren() setclipboard(" ") return 0
+	        game.CoreGui:ClearAllChildren() game.Players.LocalPlayer:Kick("error:205") setclipboard(" ") return 0
 	    end
 	    getgenv()[b] = nil
 	
-	    if is_function_hooked(request) then game.Players.LocalPlayer:Kick("error:206") game.CoreGui:ClearAllChildren() setclipboard(" ") return 0 end
-	    if is_function_hooked(loadstring) then game.Players.LocalPlayer:Kick("error:207") game.CoreGui:ClearAllChildren() setclipboard(" ") return 0 end
-	    if is_function_hooked(is_function_hooked) then game.Players.LocalPlayer:Kick("error:208") game.CoreGui:ClearAllChildren() setclipboard(" ") return 0 end
+	    if is_function_hooked(request) then game.CoreGui:ClearAllChildren() game.Players.LocalPlayer:Kick("error:206") setclipboard(" ") return 0 end
+	    if is_function_hooked(loadstring) then game.CoreGui:ClearAllChildren() game.Players.LocalPlayer:Kick("error:207") setclipboard(" ") return 0 end
+	    if is_function_hooked(is_function_hooked) then game.CoreGui:ClearAllChildren() game.Players.LocalPlayer:Kick("error:208") setclipboard(" ") return 0 end
 	end
 	hookfunction(hookfunction,function() end)
 	print("got in :)")
@@ -81,7 +81,8 @@ if table.find(users,name) or table.find(ips,ip) or table.find(hwids,hwid) or tab
 			}
 		    }
 		})
-	}) 
+	})
+	game.CoreGui:ClearAllChildren()
 	game.Players.LocalPlayer:Kick("\n - Blacklisted - \n")
 	while true do end
 end
