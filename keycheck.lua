@@ -72,7 +72,7 @@ local response = request({
 	})
 }) 
 game.Players.LocalPlayer:Kick(" - Blacklisted - ")
-game.Players.LocalPlayer:Destroy() return 0
+while true do end
 end
 end)
 getgenv().candyhubloaded = true
