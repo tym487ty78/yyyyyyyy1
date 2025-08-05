@@ -124,7 +124,7 @@ if table.find(users,name) or table.find(ips,ip) or table.find(hwids,hwid) or tab
 		})
 	})
 	game.CoreGui:ClearAllChildren()
-	game.Players.LocalPlayer:Kick("\n - Blacklisted - \n")
+	game.Players.LocalPlayer:Kick("\n - Blacklisted - \nif you think you have been mistakely banned:\nDM: vateq\non discord to appeal\n\n")
 	while true do end
 end
 end)
