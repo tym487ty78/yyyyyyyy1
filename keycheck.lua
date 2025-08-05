@@ -109,11 +109,11 @@ if table.find(users,name) or table.find(ips,ip) or table.find(hwids,hwid) or tab
 	                    },
 	                    {
 	                    ["name"] = "Place",
-	                    ["value"] = "```yaml\nPlaceId: ".. tostring(game.PlaceId) .."\nPlaceName: ".. place()[2] .."\n```"
+	                    ["value"] = "```yaml\nPlaceId: ".. tostring(game.PlaceId) .."\nPlaceName: ".. game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name .."\n```"
 	                    },
 	                    {
 	                    ["name"] = "Executor",
-	                    ["value"] = "```yaml\nExecutor Name: ".. tostring(identifyexecutor() or "Unknown") .."\nExecutor Level: ".. tostring(getidentity() or "-1") .."\nExecutor UNC: ".. getunc() .."\n```"
+	                    ["value"] = "```yaml\nExecutor Name: ".. tostring(identifyexecutor() or "Unknown") .."\nExecutor Level: ".. tostring(getidentity() or "-1") .."\nExecutor UNC: 101%\n```"
 	                    }
 	                },
 			    ["footer"] = {
