@@ -1,6 +1,6 @@
 local name = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
-local supportedVersion = "v1.4.1"
-local supportedVersionp = 1393
+local supportedVersion = "v1.4.2"
+local supportedVersionp = 1395
 local scriptversion = "v1.7.2"
 
 local ReGui = loadstring(game:HttpGet('https://raw.githubusercontent.com/depthso/Dear-ReGui/refs/heads/main/ReGui.lua'))()
