@@ -1,10 +1,10 @@
 local name = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
 local supportedVersion = "v1.4.1"
-local supportedVersionp = 1390
+local supportedVersionp = 1393
 
 local ReGui = loadstring(game:HttpGet('https://raw.githubusercontent.com/depthso/Dear-ReGui/refs/heads/main/ReGui.lua'))()
 local Window = ReGui:TabsWindow({
-	Title = "CandyHub - ".. name .. " v1.6.66",
+	Title = "CandyHub - ".. name .. " v1.7.1",
 	Size = UDim2.fromOffset(375, 425)
 }) --> TabSelector & WindowClass
 
@@ -34,11 +34,12 @@ local function modal(title, description, call)
             task.spawn(call)
         end,
     })
+    return modalw
 end
 
 
 local abs = function(num)
-    if num < 0 then
+    if num ~= 0 then
         return -num
     end
     return num
@@ -69,6 +70,117 @@ local function getitems()
     return items
 end
 
+local function ismoon()
+
+end
+
+
+_G.filetarget = ""
+
+local function place(name,x,y,z)
+    local args = {
+        name,
+        {
+            target = plot:FindFirstChild("Plot"),
+            hitPosition = vector.create(x,y,z), -- -6.59358024597168, 59, -312.9150390625
+            targetSurface = Enum.NormalId.Top
+        }
+    }
+    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("BuildingEvents"):WaitForChild("PlaceBlock"):FireServer(unpack(args))
+end
+
+local function simulatetable()
+    local zip = {}
+    for i, item in plot:FindFirstChild("PlacedBlocks"):GetChildren() do
+        table.insert(zip, 
+            {
+                item.Name,
+                {
+                    item.PrimaryPart.Position.X,
+                    item.PrimaryPart.Position.Y,
+                    item.PrimaryPart.Position.Z
+                }
+            }
+        )
+    end
+    return zip
+end
+
+local function decode(table)
+    return game:GetService("HttpService"):JSONDecode(table)
+end
+
+local function encode(table)
+    return game:GetService("HttpService"):JSONEncode(table)
+end
+
+local function save(name,table)
+    local path = "CandyHub\\Builds\\"..name..".json"
+    writefile(path,encode(table))
+end
+
+local function load(name)
+
+    local path = "CandyHub\\Builds\\"..name..".json"
+
+    if isfile(path) then
+        return decode(readfile(path))
+    else
+        return nil
+    end
+end
+
+local function takeall()
+    for _, it in plot.PlacedBlocks:GetChildren() do
+        local i = it.PrimaryPart
+        local args = {
+            {
+                target = i,
+                hitPosition = vector.create(i.CFrame.p.X, i.CFrame.p.Y, i.CFrame.p.Z),
+                targetSurface = Enum.NormalId.Left
+            }
+        }
+        game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("BuildingEvents"):WaitForChild("GrabBlock"):FireServer(unpack(args))
+    end
+end
+
+local function getblocks(zip)
+    local blocks = {}
+
+    for _, res in ipairs(zip) do
+        local name = res[1]
+        blocks[name] = blocks[name] or {}
+        table.insert(blocks[name], res)
+    end
+
+    return blocks
+end
+
+local function hasresources(zip)
+    local blocks = getblocks(zip)
+    local isc = false
+
+    for i, block in blocks do
+        for name, blockList in pairs(blocks) do
+            if game:GetService("Players").LocalPlayer.Important.Inventory:FindFirstChild(name).Value >= #blockList then
+                isc = true
+            else
+                return false
+            end
+        end
+    end
+    return isc
+end
+
+local function loaddecoded(decoded)
+    for i, item in decoded do
+        task.spawn(function()
+            place(item[1],item[2][1],item[2][2],item[2][3])
+        end)
+    end
+end
+
+
 _G.candyhub = {
     autofarm = false,
     moon = false,
@@ -77,6 +189,7 @@ _G.candyhub = {
     endpos = 100000,
     allitems = true,
     mode = "Normal",
+    autotake = true,
     items = {
         propeller_2 = false,
         shield = false,
@@ -149,7 +262,7 @@ local function getoffseat()
 end
 
 local Main = Window:CreateTab({Name = "Main"})
-local f1 = Main:CollapsingHeader({Title="Main"}) --> Canvas
+local f1 = Main:CollapsingHeader({Title="Main",Collapsed=false}) --> Canvas
 local my = Main:CollapsingHeader({Title="Stats",Collapsed=false});my:SetVisible(false)
 local my1 = my:Label({Text = "Money Earned: 0"})
 local my2 = my:Label({Text = "Time: 0h 0m 0s"})
@@ -217,7 +330,7 @@ f1:Checkbox({
                 task.wait(0.35)
                 local abc = true
                 --dbg:Label({Text = "abc1"})
-                while launched.Value and _G.candyhub.autofarm and (plane() and alive()) and abc do
+                while launched.Value and _G.candyhub.autofarm and (plane() and alive()) and abc and ((not game:GetService("ReplicatedStorage").ActiveEvents.BloodMoonActive.Value and _G.candyhub.moon) or not _G.candyhub.moon) do
                     --task.spawn(function()
                     --dbg:Label({Text = "abc2"})
                     if plane() and alive() then
@@ -327,7 +440,7 @@ f1:SliderInt({
     Label = "UnNatural SpeedUP",
     Value = 17000,
     Minimum = 0,
-    Maximum = 19500,
+    Maximum = 100000,
     Callback = function(self, v: Int)
         task.spawn(function()
             _G.candyhub.x = v 
@@ -347,7 +460,7 @@ f1:InputInt({
     end
 })
 
-local info123 = f1:Label({Text = "\n RECCOMENDED SPEEDUP: 17500+-\n IF SPEEDUP IS DETECTED YOU WONT GET REWARDS\n ITS DETECTED WHEN UR MOVING FASTER THAN MAP RENDER \n"})
+local info123 = f1:Label({Text = "\n RECCOMENDED SPEEDUP: 17500+-\n IF SPEEDUP IS DETECTED YOU WONT GET REWARDS\n NEED MORE PROPELLERS FOR MORE SPD \n"})
 info123.TextColor3 = Color3.fromRGB(100,100,245)
 
 --[[
@@ -401,7 +514,7 @@ f64:Checkbox({
 	end
 })]]
 
-local f3 = Main:CollapsingHeader({Title="Auto Buy"})
+local f3 = Main:CollapsingHeader({Title="Auto Buy",Collapsed=false})
 local b663 
 
 f3:Checkbox({
@@ -442,12 +555,11 @@ f3:Checkbox({
         end)
 	end
 })
-b663 = f3:CollapsingHeader({Title="Items"});b663:SetVisible(false)
+b663 = f3:CollapsingHeader({Title="Items",Collapsed = false});b663:SetVisible(false)
 for i, item in getitems() do
-    local BetterName = item:gsub("_"," ")
     b663:Checkbox({
         Value = false,
-        Label = BetterName,
+        Label = item,
         Callback = function(self, v: boolean)
             task.spawn(function()
                 _G.candyhub.items[item] = v
@@ -458,9 +570,131 @@ end
 
 
 
-local bd = Window:CreateTab({Name = "Build"})
-local b1 = bd:CollapsingHeader({Title="Remove"})
+local bsa = Window:CreateTab({Name = "Build"})
+local bs1 = bsa:CollapsingHeader({Title="Build",NoArrow = true,OpenOnArrow = true,Collapsed=false})
+local bs2 = bsa:CollapsingHeader({Title="Informations/Data",Collapsed=false,NoArrow=true,OpenOnArrow=true})
 
+bs1:InputText({
+    Label = "File Name",
+    Value = "",
+    Placeholder = "file name. . .",
+    MultiLine = false,
+    Callback = function(self, v: string)
+        _G.filetarget = v
+    end
+})
+
+bs1:Combo({
+	Label = "Files",
+	Selected = "",
+	GetItems = function()
+        local items = {}
+        for i, item in listfiles("CandyHub\\Builds\\") do
+            local ign = item:gsub("CandyHub\\Builds\\","")
+            local ngi = ign:gsub(".json","")
+            table.insert(items,ngi)
+        end
+        return items
+	end,
+    Callback = function(self, v)
+        --loaddecoded(load(v))
+        _G.filetarget = v
+    end
+})
+
+bs1:Button({
+	Text = "  load  ",
+	Callback = function(self)
+        if hasresources(load(_G.filetarget)) then
+            if _G.candyhub.autotake then
+                takeall()
+                repeat task.wait() until #plot.PlacedBlocks:GetChildren() == 0
+            end
+            loaddecoded(load(_G.filetarget))
+        else
+            local blocks = getblocks(load(_G.filetarget))
+
+            local function getblocks(zip)
+                local blocks = {}
+
+                for _, res in ipairs(resources) do
+                    local name = res[1]
+                    blocks[name] = blocks[name] or {}
+                    table.insert(blocks[name], res)
+                end
+
+                return blocks
+            end
+
+            local popup = ReGui:PopupModal({
+                Title = "Need More Blocks.",
+            })
+
+            for name, blockList in pairs(blocks) do
+                --print(name .. " blocks: " .. tostring(#blockList))
+                if game:GetService("Players").LocalPlayer.Important.Inventory:FindFirstChild(name).Value >= #blockList then
+                    popup:Label({
+                        Text = name..": [" .. tostring(game:GetService("Players").LocalPlayer.Important.Inventory:FindFirstChild(name).Value) .. "/" .. tostring(#blockList) .. "] (COMPLETE)"
+                    })
+                else
+                    popup:Label({
+                        Text = name..": [" .. tostring(game:GetService("Players").LocalPlayer.Important.Inventory:FindFirstChild(name).Value) .. "/" .. tostring(#blockList) .. "]"
+                    })
+                end
+            end
+
+            local Row = popup:Row({
+                Expanded = true
+            })
+            Row:Button({
+                Text = "Ok",
+                Callback = function()
+                    popup:ClosePopup()
+                end,
+            })
+        end
+	end
+})
+
+bs1:Button({
+	Text = "  save  ",
+	Callback = function(self)
+        save(_G.filetarget,simulatetable())
+	end
+})
+
+bs1:Button({
+	Text = "  take all blocks  ",
+	Callback = function(self)
+        takeall()
+	end
+})
+
+bs1:Checkbox({
+	Value = true,
+	Label = "Auto Take Blocks",
+	Callback = function(self, v: boolean)
+        task.spawn(function()
+            _G.candyhub.autotake = v
+        end)
+	end
+})
+
+local bsdc1 = bsa:CollapsingHeader({Title="Copy Build (WIP)",Collapsed=true})
+
+bsdc1:Combo({
+	Label = "Players (WIP)",
+	Selected = "",
+	GetItems = function()
+        return {"WORKING ON IT!"}
+	end,
+    Callback = function(self, v)
+    end
+})
+
+
+
+--[[
 b1:Button({
 	Text = "Take All Blocks",
 	Callback = function(self)
@@ -476,10 +710,22 @@ b1:Button({
             game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("BuildingEvents"):WaitForChild("GrabBlock"):FireServer(unpack(args))
         end
 	end
-})
+})]]
+
+
+
+
+
+
+
+
+
+
+
+
 
 local events = Window:CreateTab({Name = "Events"})
-local me = events:CollapsingHeader({Title="Moon Event"})
+local me = events:CollapsingHeader({Title="Moon Event",Collapsed=false,NoArrow=true,OpenOnArrow=true})
 local mi = events:CollapsingHeader({Title="Stats",Collapsed=false});mi:SetVisible(false)
 local ml1 = mi:Label({Text = "Money Earned: 0"})
 local ml2 = mi:Label({Text = "Moon Coins Earned: 0"})
@@ -535,9 +781,15 @@ me:Checkbox({
                         repeat
                             game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("SpectialEvents"):WaitForChild("PortalTouched"):FireServer()
                             task.wait(1)
-                            getoffseat()
-                            task.wait(0.05)
-                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = spawnpartcfr + Vector3.new(0,8,0)
+                            if _G.candyhub.mode == "SuperFast" then
+                                getoffseat()
+                                task.spawn(function()
+                                    if alive() then for i = 1,8 do
+                                        task.wait(0.2)
+                                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = spawnpartcfr + Vector3.new(0,5,0)
+                                    end end
+                                end)
+                            end
                         until game.Players.LocalPlayer:GetAttribute("InEvent") and plot:FindFirstChild("SpawnPart")
                     end
                     --[[
@@ -551,14 +803,30 @@ me:Checkbox({
 
                     for i, item in pairs(game:GetService("ReplicatedStorage"):GetDescendants()) do
                         if item:FindFirstChild("BloodMoonCoin") and item.Name ~= "Instances" then
-                            if _G.candyhub.mode == "Normal" then game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = item.CFrame + Vector3.new(0,0,0) end
+                            if _G.candyhub.mode == "Normal" then game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = item.CFrame + Vector3.new(0,0,0) 
+                            elseif _G.candyhub.mode == "Fast" then
+                                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(
+                                    Vector3.new(
+                                        game.Players.LocalPlayer.Character.HumanoidRootPart.Position.X,
+                                        500,
+                                        game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Z
+                                    ),
+                                    Vector3.new(
+                                        game.Players.LocalPlayer.Character.HumanoidRootPart.Position.X + 10,
+                                        500,
+                                        game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Z
+                                    )
+                                )
+                            end
                             local args = {item.Name}
                             game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("SpectialEvents"):WaitForChild("CollectCoin"):FireServer(unpack(args))
-                            if _G.candyhub.mode == "Normal" or _G.candyhub.mode == "Fast" then task.wait(0.01) end
+                            if _G.candyhub.mode == "Normal" or _G.candyhub.mode == "Fast" then task.wait(0.01) else
+                                task.wait()
+                            end
                         end
                     end
 
-                    if _G.candyhub.mode == "Normal" then 
+                    if _G.candyhub.mode == "Normal" or not game:GetService("ReplicatedStorage").ActiveEvents.BloodMoonActive.Value then 
                         task.wait(0.4)
                         game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("LaunchEvents"):WaitForChild("Return"):FireServer()
                         task.wait(0.4) 
@@ -611,8 +879,8 @@ me:Checkbox({
 })
 
 local misc = Window:CreateTab({Name = "Misc"})
-
-misc:Checkbox({
+local misc1 = misc:CollapsingHeader({Title="Afk",Collapsed=false,NoArrow=true,OpenOnArrow=true})
+misc1:Checkbox({
 	Value = false,
 	Label = "Anti AFK",
 	Callback = function(self, v: boolean)
@@ -621,6 +889,42 @@ misc:Checkbox({
         end)
 	end
 })
+
+local misc2 = misc:CollapsingHeader({Title="GUI",Collapsed=false,NoArrow=true,OpenOnArrow=true})
+
+misc2:Checkbox({
+	Value = false,
+	Label = "Resized Inventory (requested)",
+	Callback = function(self, v: boolean)
+        task.spawn(function()
+            --
+        end)
+	end
+})
+
+f1:SliderInt({
+    Label = "X",
+    Value = 60,
+    Minimum = 10,
+    Maximum = 500,
+    Callback = function(self, v: Int)
+        task.spawn(function()
+            _G.candyhub.posy = v 
+        end)
+    end
+})
+
+misc2:Checkbox({
+	Value = false,
+	Label = "Add Icons to items in inventory",
+	Callback = function(self, v: boolean)
+        task.spawn(function()
+            --
+        end)
+	end
+})
+
+
 
 game:GetService("Players").LocalPlayer.Idled:Connect(function()
     if _G.candyhub.afk then
@@ -777,8 +1081,6 @@ if request then
         end
     })
 end
-
-print("v1.6.66 fixed")
 
 --[[
 
