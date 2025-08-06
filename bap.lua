@@ -1,11 +1,11 @@
 local name = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
 local supportedVersion = "v1.4.2"
 local supportedVersionp = 1395
-local scriptversion = "v1.7.2"
+local scriptversion = "v1.7.35"
 
 local ReGui = loadstring(game:HttpGet('https://raw.githubusercontent.com/depthso/Dear-ReGui/refs/heads/main/ReGui.lua'))()
 local Window = ReGui:TabsWindow({
-	Title = "CandyHub - ".. name .. " " .. scriptversion,
+	Title = "[🍬] CandyHub - ".. name .. " " .. scriptversion,
 	Size = UDim2.fromOffset(375, 425)
 }) --> TabSelector & WindowClass
 
@@ -38,6 +38,9 @@ local function modal(title, description, call)
     return modalw
 end
 
+if not isfolder("CandyHub\\Builds") then
+makefolder("CandyHub\\Builds")
+end
 
 local abs = function(num)
     if num ~= 0 then
@@ -604,48 +607,90 @@ bs1:Combo({
     end
 })
 
+
 bs1:Button({
 	Text = "  load  ",
 	Callback = function(self)
-        if _G.filetarget ~= nil then
-        if hasresources(load(_G.filetarget)) then
-            if _G.candyhub.autotake then
-                takeall()
-                repeat task.wait() until #plot.PlacedBlocks:GetChildren() == 0
-            end
-            loaddecoded(load(_G.filetarget))
-        else
-            local blocks = getblocks(load(_G.filetarget))
+        local items = {}
+        for i, item in listfiles("CandyHub\\Builds\\") do
+            local ign = item:gsub("CandyHub\\Builds\\","")
+            local ngi = ign:gsub(".json","")
+            table.insert(items,ngi)
+        end
 
-            local function getblocks(zip)
-                local blocks = {}
-
-                for _, res in ipairs(resources) do
-                    local name = res[1]
-                    blocks[name] = blocks[name] or {}
-                    table.insert(blocks[name], res)
+        if table.find(items,_G.filetarget) then
+            if hasresources(load(_G.filetarget)) then
+                if _G.candyhub.autotake then
+                    takeall()
+                    repeat task.wait() until #plot.PlacedBlocks:GetChildren() == 0
                 end
+                loaddecoded(load(_G.filetarget))
+            else
+                local blocks = getblocks(load(_G.filetarget))
+                if type(blocks) == "table" and #blocks ~= 0 then
+                    local function getblocks(zip)
+                        local blocks = {}
 
-                return blocks
-            end
+                        for _, res in ipairs(resources) do
+                            local name = res[1]
+                            blocks[name] = blocks[name] or {}
+                            table.insert(blocks[name], res)
+                        end
 
-            local popup = ReGui:PopupModal({
-                Title = "Need More Blocks.",
-            })
+                        return blocks
+                    end
 
-            for name, blockList in pairs(blocks) do
-                --print(name .. " blocks: " .. tostring(#blockList))
-                if game:GetService("Players").LocalPlayer.Important.Inventory:FindFirstChild(name).Value >= #blockList then
-                    popup:Label({
-                        Text = name..": [" .. tostring(game:GetService("Players").LocalPlayer.Important.Inventory:FindFirstChild(name).Value) .. "/" .. tostring(#blockList) .. "] (COMPLETE)"
+                    local popup = ReGui:PopupModal({
+                        Title = "Need More Blocks.",
+                    })
+
+                    for name, blockList in pairs(blocks) do
+                        --print(name .. " blocks: " .. tostring(#blockList))
+                        if game:GetService("Players").LocalPlayer.Important.Inventory:FindFirstChild(name).Value >= #blockList then
+                            popup:Label({
+                                Text = name..": [" .. tostring(game:GetService("Players").LocalPlayer.Important.Inventory:FindFirstChild(name).Value) .. "/" .. tostring(#blockList) .. "] (COMPLETE)"
+                            })
+                        else
+                            popup:Label({
+                                Text = name..": [" .. tostring(game:GetService("Players").LocalPlayer.Important.Inventory:FindFirstChild(name).Value) .. "/" .. tostring(#blockList) .. "]"
+                            })
+                        end
+                    end
+
+                    local Row = popup:Row({
+                        Expanded = true
+                    })
+                    Row:Button({
+                        Text = "Ok",
+                        Callback = function()
+                            popup:ClosePopup()
+                        end,
                     })
                 else
+                    local popup = ReGui:PopupModal({
+                        Title = "Save Error",
+                    })
                     popup:Label({
-                        Text = name..": [" .. tostring(game:GetService("Players").LocalPlayer.Important.Inventory:FindFirstChild(name).Value) .. "/" .. tostring(#blockList) .. "]"
+                        Text = "\n This Save Doesnt contain any blocks. \n"
+                    })
+                    local Row = popup:Row({
+                        Expanded = true
+                    })
+                    Row:Button({
+                        Text = "Ok",
+                        Callback = function()
+                            popup:ClosePopup()
+                        end,
                     })
                 end
             end
-
+        else
+            local popup = ReGui:PopupModal({
+                Title = "Error",
+            })
+            popup:Label({
+                Text = "\n This Save Doesnt Exist \n"
+            })
             local Row = popup:Row({
                 Expanded = true
             })
@@ -655,7 +700,6 @@ bs1:Button({
                     popup:ClosePopup()
                 end,
             })
-        end
         end
 	end
 })
@@ -896,7 +940,7 @@ local misc2 = misc:CollapsingHeader({Title="GUI",Collapsed=false,NoArrow=true,Op
 
 misc2:Checkbox({
 	Value = false,
-	Label = "Resized Inventory (requested)",
+	Label = "Resized Inventory (WIP)",
 	Callback = function(self, v: boolean)
         task.spawn(function()
             --
@@ -905,20 +949,20 @@ misc2:Checkbox({
 })
 
 f1:SliderInt({
-    Label = "X",
-    Value = 60,
-    Minimum = 10,
-    Maximum = 500,
+    Label = "X (WIP)",
+    Value = 1,
+    Minimum = 1,
+    Maximum = 2,
     Callback = function(self, v: Int)
         task.spawn(function()
-            _G.candyhub.posy = v 
+            --_G.candyhub.posy = v 
         end)
     end
 })
 
 misc2:Checkbox({
 	Value = false,
-	Label = "Add Icons to items in inventory",
+	Label = "Add Icons to items in inventory (WIP)",
 	Callback = function(self, v: boolean)
         task.spawn(function()
             --
@@ -965,7 +1009,7 @@ x2.TextColor3= Color3.fromRGB(bb1,bb2,0)
 l0.TextColor3= Color3.fromRGB(220,140,20)
 
 info:Button({
-	Text = "DanceButton (requested by user, does nothing)",
+	Text = "DanceButton | requested by user, does nothing   ",
 	Callback = function(self)
         print("i said it does nothing...")
 	end
