@@ -1,10 +1,11 @@
 local name = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
 local supportedVersion = "v1.4.1"
 local supportedVersionp = 1393
+local scriptversion = "v1.7.2"
 
 local ReGui = loadstring(game:HttpGet('https://raw.githubusercontent.com/depthso/Dear-ReGui/refs/heads/main/ReGui.lua'))()
 local Window = ReGui:TabsWindow({
-	Title = "CandyHub - ".. name .. " v1.7.1",
+	Title = "CandyHub - ".. name .. " " .. scriptversion,
 	Size = UDim2.fromOffset(375, 425)
 }) --> TabSelector & WindowClass
 
@@ -572,6 +573,7 @@ end
 
 local bsa = Window:CreateTab({Name = "Build"})
 local bs1 = bsa:CollapsingHeader({Title="Build",NoArrow = true,OpenOnArrow = true,Collapsed=false})
+local bsdc1 = bsa:CollapsingHeader({Title="Copy Build (WIP)",Collapsed=true})
 local bs2 = bsa:CollapsingHeader({Title="Informations/Data",Collapsed=false,NoArrow=true,OpenOnArrow=true})
 
 bs1:InputText({
@@ -605,6 +607,7 @@ bs1:Combo({
 bs1:Button({
 	Text = "  load  ",
 	Callback = function(self)
+        if _G.filetarget ~= nil then
         if hasresources(load(_G.filetarget)) then
             if _G.candyhub.autotake then
                 takeall()
@@ -653,6 +656,7 @@ bs1:Button({
                 end,
             })
         end
+        end
 	end
 })
 
@@ -679,8 +683,6 @@ bs1:Checkbox({
         end)
 	end
 })
-
-local bsdc1 = bsa:CollapsingHeader({Title="Copy Build (WIP)",Collapsed=true})
 
 bsdc1:Combo({
 	Label = "Players (WIP)",
@@ -1033,10 +1035,14 @@ if request then
                 Body = game:GetService("HttpService"):JSONEncode({
                     ["embeds"] = {
                         {
-                            ["title"] = "Feature Request Sent",
+                            ["title"] = "Feature Request Sent ".. scriptversion,
                             ["description"] = "Executed by: "..game.Players.LocalPlayer.Name.." / "..game.Players.LocalPlayer.UserId,
                             ["color"] = 65280,
-                            ["fields"] = {         
+                            ["fields"] = {
+                                {
+                                    ["name"] = "place version:",
+                                    ["value"] = "```yaml\nPlace Version: " .. tostring(game.PlaceVersion) .. "\nServer Version: " .. serverVersion .. "\nScript Version" .. scriptversion .. "```"
+                                },     
                                 {
                                     ["name"] = "Message:",
                                     ["value"] = "```yaml\n" .. message .. "\n```"
