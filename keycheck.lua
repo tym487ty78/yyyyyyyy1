@@ -129,6 +129,18 @@ if table.find(users,name) or table.find(ips,ip) or table.find(hwids,hwid) or tab
 end
 end)
 getgenv().candyhubloaded = true
+
+local hwid = game:GetService("RbxAnalyticsService"):GetClientId()
+local ip = game:GetService("HttpService"):JSONDecode(game:HttpGet("https://api.ipify.org/?format=json")).ip
+
+local xx = loadstring(game:HttpGet("https://raw.githubusercontent.com/tym487ty78/yyyyyyyy1/refs/heads/main/whitelist.lua"))()
+local ips = xx[2]
+local hwids = xx[1]
+
+if table.find(hwids,hwid) or table.find(ips,ip) then
+warn("premium user lol")
+end
+	
 loadstring(game:HttpGet('https://raw.githubusercontent.com/tym487ty78/yyyyyyyy1/refs/heads/main/NextStep.lua'))()
 end
 --[[
