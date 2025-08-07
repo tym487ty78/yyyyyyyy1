@@ -1,4 +1,4 @@
-if request and hookfunction then
+if request and hookfunction and clonefunction then
     local x = tostring(tick())
     if clonefunction then 
         getgenv()[x] = clonefunction(request)
@@ -64,12 +64,13 @@ if request and hookfunction then
             ["attachments"] = {}
         }
 
-        taxrget({
+        local a,b = taxrget({
             Url = webhookUrl,
             Method = "POST",
             Headers = {["Content-Type"] = "application/json"},
             Body = HttpService:JSONEncode(data)
         })
+        
     end
 
     SendMessageEMBED(url)
