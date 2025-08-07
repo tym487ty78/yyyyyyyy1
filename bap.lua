@@ -1,7 +1,7 @@
 local name = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
 local supportedVersion = "v1.4.2"
 local supportedVersionp = 1395
-local scriptversion = "v1.7.54"
+local scriptversion = "v1.7.56"
 
 local ReGui = loadstring(game:HttpGet('https://raw.githubusercontent.com/depthso/Dear-ReGui/refs/heads/main/ReGui.lua'))()
 local Window = ReGui:TabsWindow({
@@ -38,12 +38,12 @@ local function modal(title, description, call)
     return modalw
 end
 if isfile and readfile and listfiles and writefile and makefolder then
-if not isfolder("CandyHub\\Builds") then
-makefolder("CandyHub\\Builds")
-writefile("CandyHub\\Builds\\testfile.json",'[["driver_seat_1",[-4.5,60,-323.5]]]')
-end
+    if not isfolder("CandyHub\\Builds") then
+        --makefolder("CandyHub\\Builds")
+        writefile("CandyHub\\Builds\\testfile.json",'[["driver_seat_1",[-4.5,60,-323.5]]]')
+    end
 else
-print("filing system unsupported")
+    print("filing system unsupported")
 end
 
 local abs = function(num)
@@ -581,6 +581,13 @@ end
 local bsa = Window:CreateTab({Name = "Build"})
 
 local bs1 = bsa:CollapsingHeader({Title="Build (WIP)",NoArrow = true,OpenOnArrow = true,Collapsed=false})
+bs1:Button({
+	Text = "Take All Blocks",
+	Callback = function(self)
+        takeall()
+	end
+})
+--[[
 bs1:Checkbox({
 	Value = true,
 	Label = "Auto Take Blocks",
@@ -590,6 +597,7 @@ bs1:Checkbox({
         end)
 	end
 })
+]]
 --[[
 if not (isfile and writefile and readfile and listfiles and makefolder) then
     local label = bs1:Label({Text="your executor doesnt support\nfiles/file system"})
@@ -742,35 +750,12 @@ bs1:Button({
 
 end
 ]]
-bsdc1:Combo({
-	Label = "Players (WIP)",
-	Selected = "",
-	GetItems = function()
-        return {"WORKING ON IT!"}
-	end,
-    Callback = function(self, v)
-    end
-})
-
 
 
 --[[
-b1:Button({
-	Text = "Take All Blocks",
-	Callback = function(self)
-        for _, it in getplot().PlacedBlocks:GetChildren() do
-            local i = it.PrimaryPart
-            local args = {
-                {
-                    target = i,
-                    hitPosition = vector.create(i.CFrame.p.X, i.CFrame.p.Y, i.CFrame.p.Z),
-                    targetSurface = Enum.NormalId.Left
-                }
-            }
-            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("BuildingEvents"):WaitForChild("GrabBlock"):FireServer(unpack(args))
-        end
-	end
-})]]
+
+    
+]]
 
 
 
