@@ -1,7 +1,7 @@
 local name = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
 local supportedVersion = "v1.4.2"
 local supportedVersionp = 1395
-local scriptversion = "v1.7.52"
+local scriptversion = "v1.7.53"
 
 local ReGui = loadstring(game:HttpGet('https://raw.githubusercontent.com/depthso/Dear-ReGui/refs/heads/main/ReGui.lua'))()
 local Window = ReGui:TabsWindow({
@@ -40,6 +40,7 @@ end
 if isfile and readfile and listfiles and writefile and makefolder then
 if not isfolder("CandyHub\\Builds") then
 makefolder("CandyHub\\Builds")
+writefile("CandyHub\\Builds\\testfile.json",'[["driver_seat_1",[-4.5,60,-323.5]]]')
 end
 else
 print("filing system unsupported")
