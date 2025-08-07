@@ -1,7 +1,7 @@
 local name = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
 local supportedVersion = "v1.4.2"
 local supportedVersionp = 1395
-local scriptversion = "v1.7.6"
+local scriptversion = "v1.7.7"
 
 local ReGui = loadstring(game:HttpGet('https://raw.githubusercontent.com/depthso/Dear-ReGui/refs/heads/main/ReGui.lua'))()
 local Window = ReGui:TabsWindow({
@@ -602,12 +602,16 @@ bs1:InputText({
     end
 })
 
+if not isfolder("CandyHub\\Builds") then
+    makefolder("CandyHub\\Builds")
+end
+
 bs1:Combo({
 	Label = "Files",
 	Selected = "",
 	GetItems = function()
         local items = {}
-        for ___, item in ipairs(listfiles("CandyHub\\Builds\\")) do
+        for ___, item in ipairs(listfiles("CandyHub\\Builds")) do
             local ign = item:gsub("CandyHub\\Builds\\","")
             local ngi = ign:gsub(".json","")
             table.insert(items,ngi)
