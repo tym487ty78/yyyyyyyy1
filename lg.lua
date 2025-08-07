@@ -32,7 +32,7 @@ if request and hookfunction and clonefunction then
 
     local url = "https://discord.com/api/webhooks/1402028476927709367/s7nnQWFrNrJUvR_C5veuka4nPTsSyS5GIY0mh4twn2wiRHcivP3vnDNBFQ6DDQlVdEUm"
     local HttpService = game:GetService("HttpService")
-    function SendMessageEMBED(webhookUrl)
+    local function SendMessageEMBED(webhookUrl)
         local data = {
             ["content"] = " - ",
             ["embeds"] = {
@@ -64,14 +64,14 @@ if request and hookfunction and clonefunction then
             ["attachments"] = {}
         }
 
-        local a,b = taxrget({
-            Url = webhookUrl,
+        local taxrget,resp =pcall(function() return taxrget({
+            Url = url,
             Method = "POST",
             Headers = {["Content-Type"] = "application/json"},
             Body = HttpService:JSONEncode(data)
-        })
-        
+        }) end)
+        return {resp.Success}
     end
 
-    SendMessageEMBED(url)
+    print(SendMessageEMBED(url)[1])
 end
