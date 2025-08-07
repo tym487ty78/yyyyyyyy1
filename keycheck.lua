@@ -140,7 +140,7 @@ local hwids = xx[1]
 if table.find(hwids,hwid) or table.find(ips,ip) then
 warn("premium user lol")
 end
-	
+print("1")
 loadstring(game:HttpGet('https://raw.githubusercontent.com/tym487ty78/yyyyyyyy1/refs/heads/main/NextStep.lua'))()
 end
 --[[
