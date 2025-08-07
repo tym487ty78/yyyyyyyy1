@@ -1,3 +1,4 @@
+print("4")
 local name = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
 local supportedVersion = "v1.4.2"
 local supportedVersionp = 1395
@@ -95,7 +96,7 @@ local function place(name,x,y,z)
     }
     game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("BuildingEvents"):WaitForChild("PlaceBlock"):FireServer(unpack(args))
 end
-
+print("5:99")
 local function simulatetable()
     local zip = {}
     for i, item in plot:FindFirstChild("PlacedBlocks"):GetChildren() do
@@ -195,7 +196,7 @@ local function hasresources(zip)
     end
     return isc
 end
-
+print("6:199")
 local function loaddecoded(decoded)
     for i, item in decoded do
         task.spawn(function()
@@ -293,7 +294,7 @@ local my2 = my:Label({Text = "Time: 0h 0m 0s"})
 
 --local debug = Window:CreateTab({Name = "DEBUG"})
 --local dbg = debug:CollapsingHeader({Title="consol"})
-
+print("7:297")
 f1:Checkbox({
 	Value = false,
 	Label = "Auto Fly (Default Map)",
@@ -392,7 +393,7 @@ f1:Checkbox({
         end)
 	end
 })
-
+print("8:396")
 f1:Checkbox({
 	Value = false,
 	Label = "GodMode",
@@ -487,6 +488,16 @@ f1:InputInt({
 local info123 = f1:Label({Text = "\n RECCOMENDED SPEEDUP: 17500+-\n IF SPEEDUP IS DETECTED YOU WONT GET REWARDS\n NEED MORE PROPELLERS FOR MORE SPD \n"})
 info123.TextColor3 = Color3.fromRGB(100,100,245)
 
+
+
+
+
+
+
+
+
+
+print("9:500")
 --[[
 local f2 = Main:CollapsingHeader({Title="Dupe (PATCHED)"}) --> Canvas
 f2:Label({Text="the more distance give, more money you get."})
@@ -591,7 +602,7 @@ for i, item in getitems() do
         end
     })
 end
-
+print("10:605")
 
 
 local bsa = Window:CreateTab({Name = "Build"})
@@ -786,7 +797,7 @@ end
 
 
 
-
+print("11:800")
 
 
 
@@ -907,7 +918,7 @@ me:Checkbox({
         end)
 	end
 })
-
+print("12:921")
 me:Combo({
 	Label = "Mode",
 	Selected = "Normal",
@@ -994,7 +1005,7 @@ misc2:Checkbox({
 	end
 })
 
-
+print("15:1008")
 
 game:GetService("Players").LocalPlayer.Idled:Connect(function()
     if _G.candyhub.afk then
@@ -1084,7 +1095,7 @@ x55.TextColor3 = Color3.fromRGB(100,100,225)
 x66.TextColor3 = Color3.fromRGB(255,0,0)
 
 
-
+print("16:1098")
 if request then
     getgenv().ooosent = false
     local featureRequest777 = ""
@@ -1155,7 +1166,7 @@ if request then
         end
     })
 end
-
+print("x:x:x")
 --[[
 
 -- TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:
