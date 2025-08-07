@@ -2,14 +2,13 @@ print("4")
 local name = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
 local supportedVersion = "v1.4.2"
 local supportedVersionp = 1395
-local scriptversion = "v1.7.85"
+local scriptversion = "v1.7.9"
 
 local ReGui = loadstring(game:HttpGet('https://raw.githubusercontent.com/depthso/Dear-ReGui/refs/heads/main/ReGui.lua'))()
 local Window = ReGui:TabsWindow({
 	Title = "[🍬] CandyHub - ".. name .. " " .. scriptversion,
 	Size = UDim2.fromOffset(375, 425)
 }) --> TabSelector & WindowClass
-
 
 local function modal(title, description, call)
     local modalw = ReGui:PopupModal({
@@ -127,6 +126,7 @@ local function save(name,table)
     local fixedname = name:gsub("CandyHub\\Builds","")
     fixedname = fixedname:gsub("Candyhub/Builds","")
     fixedname = fixedname:gsub("/","")
+    fixedname = fixedname:gsub("CandyHubBuilds", "")
     fixedname = fixedname:gsub(".json","")
 
     local path = "CandyHub\\Builds\\"..fixedname..".json"
@@ -639,9 +639,10 @@ bs1:Combo({
 	GetItems = function()
         local items = {}
         for ___, item in ipairs(listfiles("CandyHub\\Builds")) do
-            local fixedname = item:gsub("CandyHub/Builds","")
+            local fixedname = item:gsub("CandyHub\\Builds\\","")
+            fixedname = fixedname:gsub("CandyHub/Builds","")
             fixedname = fixedname:gsub("\\","");fixedname=fixedname:gsub("/","")
-            fixedname = fixedname:gsub("CandyHub\\Builds\\","")
+            fixedname = fixedname:gsub("CandyHubBuilds", "")
             fixedname = fixedname:gsub(".json","")
             table.insert(items,fixedname)
         end
@@ -659,9 +660,10 @@ bs1:Button({
 	Callback = function(self)
         local items = {}
         for i, item in listfiles("CandyHub\\Builds\\") do
-            local fixedname = item:gsub("CandyHub/Builds","")
+            local fixedname = item:gsub("CandyHub\\Builds\\","")
+            fixedname = fixedname:gsub("CandyHub/Builds","")
             fixedname = fixedname:gsub("\\","");fixedname=fixedname:gsub("/","")
-            fixedname = fixedname:gsub("CandyHub\\Builds\\","")
+            fixedname = fixedname:gsub("CandyHubBuilds", "")
             fixedname = fixedname:gsub(".json","")
             table.insert(items,fixedname)
         end
