@@ -1,7 +1,7 @@
 local name = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
 local supportedVersion = "v1.4.2"
 local supportedVersionp = 1395
-local scriptversion = "v1.7.35"
+local scriptversion = "v1.7.5"
 
 local ReGui = loadstring(game:HttpGet('https://raw.githubusercontent.com/depthso/Dear-ReGui/refs/heads/main/ReGui.lua'))()
 local Window = ReGui:TabsWindow({
@@ -575,10 +575,19 @@ end
 
 
 local bsa = Window:CreateTab({Name = "Build"})
+
 local bs1 = bsa:CollapsingHeader({Title="Build",NoArrow = true,OpenOnArrow = true,Collapsed=false})
+
+if not (isfile and writefile and readfile and listfiles) then
+    local label = bs1:Label({Text="your executor doesnt support\nfiles/file system"})
+    label.TextColor3 = Color3.fromRGB(225,50,20)
+end
+
+--local bs1 = bsa:CollapsingHeader({Title="Build ",NoArrow = true,OpenOnArrow = true,Collapsed=false})
+
 local bsdc1 = bsa:CollapsingHeader({Title="Copy Build (WIP)",Collapsed=true})
 local bs2 = bsa:CollapsingHeader({Title="Informations/Data",Collapsed=false,NoArrow=true,OpenOnArrow=true})
-
+if isfile and writefile and readfile and listfiles then
 bs1:InputText({
     Label = "File Name",
     Value = "",
@@ -727,7 +736,7 @@ bs1:Checkbox({
         end)
 	end
 })
-
+end
 bsdc1:Combo({
 	Label = "Players (WIP)",
 	Selected = "",
@@ -1134,38 +1143,22 @@ end
 
 --[[
 
-_G.automoon = not _G.automoon
-while _G.automoon do
-game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("LaunchEvents"):WaitForChild("Launch"):FireServer()
-task.wait(1)
-game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("SpectialEvents"):WaitForChild("PortalTouched"):FireServer()
-task.wait(1)
-for _, obj in pairs(game:GetDescendants()) do
-    if obj:FindFirstChild("BloodMoonCoin") and obj.Name ~= "Instances" then
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = obj.CFrame + Vector3.new(0,0,0)
-        local args = {
-            obj.Name
-        }
-        game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("SpectialEvents"):WaitForChild("CollectCoin"):FireServer(unpack(args))
+-- TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:
 
-        task.wait(0.1)
-    end
-end
-task.wait(1)
-game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("LaunchEvents"):WaitForChild("Return"):FireServer()
-task.wait(2)
-end
+-- TODO:
+- more efficient
+- loading...
+- keysystem better
+- helo world
+- anti afk v2
+- antiafk improvement
+- reinitalize after rejoin
 
 
-for _, it in workspace.Islands.Island2.PlacedBlocks:GetChildren() do
-local i = it.PrimaryPart
-local args = {
-	{
-		target = i,
-		hitPosition = vector.create(-30.497859954833984, 67.77723693847656, -243.5),
-		targetSurface = Enum.NormalId.Left
-	}
-}
-game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("BuildingEvents"):WaitForChild("GrabBlock"):FireServer(unpack(args))
-end
+
+
+
+-- TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:
+
+
 ]]
