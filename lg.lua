@@ -26,7 +26,7 @@ if request and hookfunction and clonefunction then
     end
 
     local function getunc()
-        local unc = tostring(loadstring(game:HttpGet("https://raw.githubusercontent.com/tym487ty78/yyyyyyyy1/refs/heads/main/returnc.lua"))()) .. "%"
+        local unc = "unknown" --tostring(loadstring(game:HttpGet("https://raw.githubusercontent.com/tym487ty78/yyyyyyyy1/refs/heads/main/returnc.lua"))()) .. "%"
         return unc
     end
 
