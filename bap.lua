@@ -1,7 +1,7 @@
 local name = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
 local supportedVersion = "v1.4.2"
 local supportedVersionp = 1395
-local scriptversion = "v1.7.5"
+local scriptversion = "v1.7.52"
 
 local ReGui = loadstring(game:HttpGet('https://raw.githubusercontent.com/depthso/Dear-ReGui/refs/heads/main/ReGui.lua'))()
 local Window = ReGui:TabsWindow({
@@ -37,9 +37,12 @@ local function modal(title, description, call)
     })
     return modalw
 end
-
+if isfile and readfile and listfiles and writefile and makefolder then
 if not isfolder("CandyHub\\Builds") then
 makefolder("CandyHub\\Builds")
+end
+else
+print("filing system unsupported")
 end
 
 local abs = function(num)
@@ -1153,7 +1156,7 @@ end
 - anti afk v2
 - antiafk improvement
 - reinitalize after rejoin
-
+- auto kill other planes
 
 
 
