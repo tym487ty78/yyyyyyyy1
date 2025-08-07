@@ -1,7 +1,7 @@
 local name = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
 local supportedVersion = "v1.4.2"
 local supportedVersionp = 1395
-local scriptversion = "v1.7.56"
+local scriptversion = "v1.7.6"
 
 local ReGui = loadstring(game:HttpGet('https://raw.githubusercontent.com/depthso/Dear-ReGui/refs/heads/main/ReGui.lua'))()
 local Window = ReGui:TabsWindow({
@@ -581,30 +581,13 @@ end
 local bsa = Window:CreateTab({Name = "Build"})
 
 local bs1 = bsa:CollapsingHeader({Title="Build (WIP)",NoArrow = true,OpenOnArrow = true,Collapsed=false})
-bs1:Button({
-	Text = "Take All Blocks",
-	Callback = function(self)
-        takeall()
-	end
-})
---[[
-bs1:Checkbox({
-	Value = true,
-	Label = "Auto Take Blocks",
-	Callback = function(self, v: boolean)
-        task.spawn(function()
-            _G.candyhub.autotake = v
-        end)
-	end
-})
-]]
---[[
+
 if not (isfile and writefile and readfile and listfiles and makefolder) then
     local label = bs1:Label({Text="your executor doesnt support\nfiles/file system"})
     label.TextColor3 = Color3.fromRGB(225,50,20)
 end
 
---local bs1 = bsa:CollapsingHeader({Title="Build ",NoArrow = true,OpenOnArrow = true,Collapsed=false})
+local bs1 = bsa:CollapsingHeader({Title="Build ",NoArrow = true,OpenOnArrow = true,Collapsed=false})
 
 local bsdc1 = bsa:CollapsingHeader({Title="Copy Build (WIP)",Collapsed=true})
 local bs2 = bsa:CollapsingHeader({Title="Informations/Data",Collapsed=false,NoArrow=true,OpenOnArrow=true})
@@ -748,8 +731,26 @@ bs1:Button({
 	end
 })
 
+bs1:Button({
+	Text = "Take All Blocks",
+	Callback = function(self)
+        takeall()
+	end
+})
+
+bs1:Checkbox({
+	Value = true,
+	Label = "Auto Take Blocks",
+	Callback = function(self, v: boolean)
+        task.spawn(function()
+            _G.candyhub.autotake = v
+        end)
+	end
+})
+
+
 end
-]]
+
 
 
 --[[
