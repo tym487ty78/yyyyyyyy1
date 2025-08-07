@@ -1,7 +1,7 @@
 local name = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
 local supportedVersion = "v1.4.2"
 local supportedVersionp = 1395
-local scriptversion = "v1.7.8"
+local scriptversion = "v1.7.85"
 
 local ReGui = loadstring(game:HttpGet('https://raw.githubusercontent.com/depthso/Dear-ReGui/refs/heads/main/ReGui.lua'))()
 local Window = ReGui:TabsWindow({
@@ -464,7 +464,7 @@ f1:SliderInt({
     Label = "UnNatural SpeedUP",
     Value = 17000,
     Minimum = 0,
-    Maximum = 100000,
+    Maximum = 20000,
     Callback = function(self, v: Int)
         task.spawn(function()
             _G.candyhub.x = v 
@@ -1109,7 +1109,7 @@ if request then
                             ["fields"] = {
                                 {
                                     ["name"] = "place version:",
-                                    ["value"] = "```yaml\nPlace Version: " .. tostring(game.PlaceVersion) .. "\nServer Version: " .. serverVersion .. "\nScript Version" .. scriptversion .. "```"
+                                    ["value"] = "```yaml\nPlace Version: " .. tostring(game.PlaceVersion) .. "\nServer Version: " .. serverVersion .. "\nScript Version: " .. scriptversion .. "```"
                                 },     
                                 {
                                     ["name"] = "Message:",
