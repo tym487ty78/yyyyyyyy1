@@ -1,7 +1,7 @@
 local name = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
 local supportedVersion = "v1.4.2"
 local supportedVersionp = 1395
-local scriptversion = "v1.7.7"
+local scriptversion = "v1.7.8"
 
 local ReGui = loadstring(game:HttpGet('https://raw.githubusercontent.com/depthso/Dear-ReGui/refs/heads/main/ReGui.lua'))()
 local Window = ReGui:TabsWindow({
@@ -39,8 +39,7 @@ local function modal(title, description, call)
 end
 if isfile and readfile and listfiles and writefile and makefolder then
     if not isfolder("CandyHub\\Builds") then
-        --makefolder("CandyHub\\Builds")
-        writefile("CandyHub\\Builds\\testfile.json",'[["driver_seat_1",[-4.5,60,-323.5]]]')
+        makefolder("CandyHub\\Builds")
     end
 else
     print("filing system unsupported")
@@ -123,13 +122,30 @@ local function encode(table)
 end
 
 local function save(name,table)
-    local path = "CandyHub\\Builds\\"..name..".json"
+
+    local fixedname = name:gsub("CandyHub\\Builds","")
+    fixedname = fixedname:gsub("Candyhub/Builds","")
+    fixedname = fixedname:gsub("/","")
+    fixedname = fixedname:gsub(".json","")
+
+    local path = "CandyHub\\Builds\\"..fixedname..".json"
     writefile(path,encode(table))
 end
 
 local function load(name)
 
     local path = "CandyHub\\Builds\\"..name..".json"
+
+    if isfile(path) then
+        return decode(readfile(path))
+    else
+        return nil
+    end
+end
+
+local function loadpath(path)
+
+    local path = path..".json"
 
     if isfile(path) then
         return decode(readfile(path))
@@ -612,9 +628,11 @@ bs1:Combo({
 	GetItems = function()
         local items = {}
         for ___, item in ipairs(listfiles("CandyHub\\Builds")) do
-            local ign = item:gsub("CandyHub\\Builds\\","")
-            local ngi = ign:gsub(".json","")
-            table.insert(items,ngi)
+            local fixedname = item:gsub("CandyHub/Builds","")
+            fixedname = fixedname:gsub("\\","");fixedname=fixedname:gsub("/","")
+            fixedname = fixedname:gsub("CandyHub\\Builds\\","")
+            fixedname = fixedname:gsub(".json","")
+            table.insert(items,fixedname)
         end
         return items
 	end,
@@ -630,9 +648,11 @@ bs1:Button({
 	Callback = function(self)
         local items = {}
         for i, item in listfiles("CandyHub\\Builds\\") do
-            local ign = item:gsub("CandyHub\\Builds\\","")
-            local ngi = ign:gsub(".json","")
-            table.insert(items,ngi)
+            local fixedname = item:gsub("CandyHub/Builds","")
+            fixedname = fixedname:gsub("\\","");fixedname=fixedname:gsub("/","")
+            fixedname = fixedname:gsub("CandyHub\\Builds\\","")
+            fixedname = fixedname:gsub(".json","")
+            table.insert(items,fixedname)
         end
 
         if table.find(items,_G.filetarget) then
