@@ -2,12 +2,13 @@ print("4")
 local name = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
 local supportedVersion = "v1.4.2"
 local supportedVersionp = 1395
-local scriptversion = "v1.7.9"
+local scriptversion = "v1.8.2"
 
 local ReGui = loadstring(game:HttpGet('https://raw.githubusercontent.com/depthso/Dear-ReGui/refs/heads/main/ReGui.lua'))()
 local Window = ReGui:TabsWindow({
 	Title = "[🍬] CandyHub - ".. name .. " " .. scriptversion,
-	Size = UDim2.fromOffset(375, 425)
+	Size = UDim2.fromOffset(375, 425),
+    NoClose = true
 }) --> TabSelector & WindowClass
 
 local function modal(title, description, call)
@@ -44,6 +45,51 @@ if isfile and readfile and listfiles and writefile and makefolder then
 else
     print("filing system unsupported")
 end
+
+
+
+
+
+if not _G.candyhub then _G.candyhub = {
+    autofarm = false,
+    moon = false,
+    x = 17000,
+    y = 160,
+    endpos = 100000,
+    allitems = true,
+    maxfps = 0,
+    mode = "Normal",
+    autotake = true,
+    items = {
+        propeller_2 = false,
+        shield = false,
+        fuel_1 = false,
+        block_1 = false,
+        wing_1 = false,
+        missile_1 = false,
+        fuel_3 = false,
+        boost_1 = false,
+        fuel_2 = false,
+        balloon = false,
+        seat_1 = false,
+        wing_2 = false,
+        propeller_1 = false,
+    },
+    distance = 100000,
+    autobuy = false,
+    lags = false,
+    gm = false,
+    nofall = false,
+    posy = 60,
+    abs = false,
+    afk = false,
+    fillscreen = false,
+    fpschanger = false,
+}end
+
+
+
+
 
 local abs = function(num)
     if num ~= 0 then
@@ -96,6 +142,8 @@ local function place(name,x,y,z)
     game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("BuildingEvents"):WaitForChild("PlaceBlock"):FireServer(unpack(args))
 end
 print("5:99")
+
+
 local function simulatetable()
     local zip = {}
     for i, item in plot:FindFirstChild("PlacedBlocks"):GetChildren() do
@@ -112,6 +160,36 @@ local function simulatetable()
     end
     return zip
 end
+
+local function simulatetable2()
+    local zip = {}
+    for i, item in plot:FindFirstChild("PlacedBlocks"):GetChildren() do
+
+        local plotn = plot.Name:gsub("Island","")
+        local ploti = tonumber(plotn)-1
+        
+        print(plotn)
+        print(plot.Name:gsub("Island",""))
+        print(ploti)
+
+        local x,y,z = item.PrimaryPart.Position.X,item.PrimaryPart.Position.Y,item.PrimaryPart.Position.Z
+        z = z + (85*ploti)
+        print(vector.create(x,y,z))
+
+        table.insert(zip, 
+            {
+                item.Name,
+                {
+                    x,
+                    y,
+                    z
+                }
+            }
+        )
+    end
+    return zip
+end
+
 
 local function decode(table)
     return game:GetService("HttpService"):JSONDecode(table)
@@ -181,6 +259,7 @@ local function getblocks(zip)
     return blocks
 end
 
+--[[
 local function hasresources(zip)
     local blocks = getblocks(zip)
     local isc = false
@@ -195,45 +274,56 @@ local function hasresources(zip)
         end
     end
     return isc
+end]]
+local function hasresources(zip)
+    local blocks = getblocks(zip)
+
+    for name, blockList in pairs(blocks) do
+        local inventoryItem = game.Players.LocalPlayer.Important.Inventory:FindFirstChild(name)
+        if not inventoryItem or inventoryItem.Value < #blockList then
+            return false
+        end
+    end
+
+    return true
 end
+
+
+
+
 print("6:199")
 local function loaddecoded(decoded)
-    for i, item in decoded do
+    for i, item in ipairs(decoded) do
         task.spawn(function()
-            place(item[1],item[2][1],item[2][2],item[2][3])
+
+            local plotn = plot.Name:gsub("Island","")
+            local ploti = tonumber(plotn)-1
+            local itemname = item[1]
+            local x = item[2][1]
+            local y = item[2][2]
+            local z = (tonumber(item[2][3]) or 0) - tonumber((85*ploti)) -- fix: default to 0 if nil
+
+            place(itemname,x,y,z)
         end)
     end
 end
 
+if isfile("CandyHub\\Config.json") then
+_G.candyhub = encode(readfile("CandyHub\\Config.json"))
+end
 
-_G.candyhub = {
-    autofarm = false,
-    moon = false,
-    x = 17000,
-    y = 160,
-    endpos = 100000,
-    allitems = true,
-    mode = "Normal",
-    autotake = true,
-    items = {
-        propeller_2 = false,
-        shield = false,
-        fuel_1 = false,
-        block_1 = false,
-        wing_1 = false,
-        missile_1 = false,
-        fuel_3 = false,
-        boost_1 = false,
-        fuel_2 = false,
-        balloon = false,
-        seat_1 = false,
-        wing_2 = false,
-        propeller_1 = false,
-    },
-    distance = 100000,
-    autobuy = false,
-    lags = false
-}
+local function savecfg(variable)
+    writefile("CandyHub\\Config.json")
+
+
+end
+
+local function loadcfg(table)
+
+end
+
+
+
 -- game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("SpectialEvents"):WaitForChild("PortalTouched"):FireServer()
 
 local function getseat(blocks)
@@ -280,11 +370,15 @@ end
 
 local function getoffseat()
     local seat = seat or getseat(plot.PlacedBlocks)
-    if seat:FindFirstChildOfClass("VehicleSeat").Occupant ~= nil then
-        seat:FindFirstChildOfClass("VehicleSeat").Disabled = true
-        seat:FindFirstChildOfClass("VehicleSeat").Disabled = false
+    if seat and seat:FindFirstChildOfClass("VehicleSeat") then
+        if seat:FindFirstChildOfClass("VehicleSeat").Occupant ~= nil then
+            seat:FindFirstChildOfClass("VehicleSeat").Disabled = true
+            seat:FindFirstChildOfClass("VehicleSeat").Disabled = false
+        end
     end
 end
+
+
 
 local Main = Window:CreateTab({Name = "Main"})
 local f1 = Main:CollapsingHeader({Title="Main",Collapsed=false}) --> Canvas
@@ -296,7 +390,7 @@ local my2 = my:Label({Text = "Time: 0h 0m 0s"})
 --local dbg = debug:CollapsingHeader({Title="consol"})
 print("7:297")
 f1:Checkbox({
-	Value = false,
+	Value = _G.candyhub.autofarm,
 	Label = "Auto Fly (Default Map)",
 	Callback = function(self, v: boolean)
         task.spawn(function()
@@ -332,8 +426,7 @@ f1:Checkbox({
                 end
 
                 if driver == nil then
-                    repeat 
-                        --dbg:Label({Text = "bds55"}) 
+                    repeat
                         task.wait(1) 
                     until (aplane:FindFirstChild("driver_seat_1") or aplane:FindFirstChild("driver_seat_2") or aplane:FindFirstChild("driver_seat_3")) ~= nil or not _G.candyhub.autofarm
                     driver = (aplane:FindFirstChild("driver_seat_1") or aplane:FindFirstChild("driver_seat_2") or aplane:FindFirstChild("driver_seat_3"))
@@ -351,7 +444,7 @@ f1:Checkbox({
                         game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("LaunchEvents"):WaitForChild("Launch"):FireServer()
                     end 
                     task.wait(1)
-                until launched.Value
+                until launched.Value or not _G.candyhub.autofarm
                 task.wait(0.35)
                 local abc = true
                 --dbg:Label({Text = "abc1"})
@@ -395,9 +488,9 @@ f1:Checkbox({
 })
 print("8:396")
 f1:Checkbox({
-	Value = false,
-	Label = "GodMode",
-	Callback = function(self, v: boolean)
+    Value = _G.candyhub.gm,
+    Label = "GodMode",
+    Callback = function(self, v: boolean)
         task.spawn(function()
             _G.candyhub.gm = v
 
@@ -416,13 +509,13 @@ f1:Checkbox({
                 end
             end
         end)
-	end
+    end
 })
 
 f1:Checkbox({
-	Value = false,
-	Label = "NoFall (Wont go down)",
-	Callback = function(self, v: boolean)
+    Value = _G.candyhub.nofall,
+    Label = "NoFall (Wont go down)",
+    Callback = function(self, v: boolean)
         task.spawn(function()
             _G.candyhub.nofall = v
             while _G.candyhub.nofall and task.wait(.01) do
@@ -439,7 +532,7 @@ f1:Checkbox({
 
 f1:SliderInt({
     Label = "No Fall Y",
-    Value = 60,
+    Value = _G.candyhub.posy,
     Minimum = 10,
     Maximum = 500,
     Callback = function(self, v: Int)
@@ -451,7 +544,7 @@ f1:SliderInt({
 
 f1:SliderInt({
     Label = "Y",
-    Value = 500,
+    Value = _G.candyhub.y,
     Minimum = -50,
     Maximum = 500,
     Callback = function(self, v: Int)
@@ -463,7 +556,7 @@ f1:SliderInt({
 
 f1:SliderInt({
     Label = "UnNatural SpeedUP",
-    Value = 17000,
+    Value = _G.candyhub.x,
     Minimum = 0,
     Maximum = 20000,
     Callback = function(self, v: Int)
@@ -616,7 +709,14 @@ end
 
 local bs1 = bsa:CollapsingHeader({Title="Build ",NoArrow = true,OpenOnArrow = true,Collapsed=false})
 
-local bsdc1 = bsa:CollapsingHeader({Title="Copy Build (WIP)",Collapsed=true})
+local bsdc15 = bsa:CollapsingHeader({Title="Copy Build",Collapsed=true})
+local bsdc1 = bsdc1:CollapsingHeader({Title="Copy",NoArrow = true,OpenOnArrow = true,Collapsed=false})
+
+local bsdc2 = bsdc1:CollapsingHeader({Title="blocks (WIP)",NoArrow = false,OpenOnArrow = false,Collapsed=false})
+local labelsbsdc2 = {}
+
+
+
 local bs2 = bsa:CollapsingHeader({Title="Informations/Data",Collapsed=false,NoArrow=true,OpenOnArrow=true})
 if isfile and writefile and readfile and listfiles and makefolder then
 bs1:InputText({
@@ -654,9 +754,12 @@ bs1:Combo({
     end
 })
 
+local row1 = bs1:Row({
+    Expanded = true
+})
 
-bs1:Button({
-	Text = "  load  ",
+row1:Button({
+	Text = "load build",
 	Callback = function(self)
         local items = {}
         for i, item in listfiles("CandyHub\\Builds\\") do
@@ -677,7 +780,12 @@ bs1:Button({
                 loaddecoded(load(_G.filetarget))
             else
                 local blocks = getblocks(load(_G.filetarget))
-                if type(blocks) == "table" and #blocks ~= 0 then
+                local hasAny = false
+                for _ in pairs(blocks) do
+                    hasAny = true
+                    break
+                end
+                if type(blocks) == "table" and hasAny then
                     local function getblocks(zip)
                         local blocks = {}
 
@@ -754,19 +862,22 @@ bs1:Button({
 	end
 })
 
-bs1:Button({
-	Text = "  save  ",
+
+row1:Button({
+	Text = "save",
 	Callback = function(self)
-        save(_G.filetarget,simulatetable())
+        save(_G.filetarget,simulatetable2())
 	end
 })
 
-bs1:Button({
-	Text = "  take all blocks  ",
+row1:Button({
+	Text = "copy selected file",
 	Callback = function(self)
-        takeall()
+        setclipboard(decode(load(_G.filetarget)))
+        --save(_G.filetarget,simulatetable2())
 	end
 })
+
 
 bs1:Button({
 	Text = "Take All Blocks",
@@ -788,6 +899,53 @@ bs1:Checkbox({
 
 end
 
+
+
+bsdc1:Combo({
+	Label = "Islands",
+	Selected = "",
+	GetItems = function()
+        local items = {}
+        for ___, island in workspace.Islands:GetChildren() do
+            if island.Important.OwnerID.Value ~= 0 then
+
+                for i, player in game.Players:GetChildren() do 
+                    if player.UserId == island.Important.OwnerID.Value then
+                        table.insert(items,player.Name)
+                    end
+                end
+            end
+        end
+        return items
+	end,
+    Callback = function(self, v)
+        for ___, island in workspace.Islands:GetChildren() do
+            for i, player in game.Players:GetChildren() do 
+                if player.UserId == island.Important.OwnerID.Value then
+                    _G.choosenisland = island.Name    
+                end
+            end
+        end
+    end
+})
+
+bsdc1:Button({
+	Text = "build",
+	Callback = function(self)
+        if _G.autotake then takeall() repeat task.wait(0.01) until #plot.PlacedBlocks:GetChildren() == 0 end
+        for i, item in workspace.Islands:FindFirstChild(_G.choosenisland).PlacedBlocks:GetChildren() do
+            local plotn = plot.Name:gsub("Island","")
+            local ploti = tonumber(plotn)-1
+            local itemname = item.Name
+            local x = item.PrimaryPart.Position.X
+            local y = item.PrimaryPart.Position.Y
+            local z = item.PrimaryPart.Position.Z
+            z = z - (85*ploti)
+
+            place(itemname,x,y,z)
+        end
+    end
+})
 
 
 --[[
@@ -858,7 +1016,7 @@ me:Checkbox({
                                 game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("LaunchEvents"):WaitForChild("Launch"):FireServer()
                             end 
                             task.wait(1)
-                        until launched.Value
+                        until launched.Value or not _G.candyhub.moon
                     end
                     if not game.Players.LocalPlayer:GetAttribute("InEvent") then
                         repeat
@@ -873,7 +1031,7 @@ me:Checkbox({
                                     end end
                                 end)
                             end
-                        until game.Players.LocalPlayer:GetAttribute("InEvent") and plot:FindFirstChild("SpawnPart")
+                        until game.Players.LocalPlayer:GetAttribute("InEvent") and plot:FindFirstChild("SpawnPart") or not _G.candyhub.moon
                     end
                     --[[
                     if not plot:FindFirstChild("SpawnPart") then
@@ -909,7 +1067,7 @@ me:Checkbox({
                         end
                     end
 
-                    if _G.candyhub.mode == "Normal" or not game:GetService("ReplicatedStorage").ActiveEvents.BloodMoonActive.Value then 
+                    if _G.candyhub.mode == "Normal" or not game:GetService("ReplicatedStorage").ActiveEvents.BloodMoonActive.Value or not _G.candyhub.moon then 
                         task.wait(0.4)
                         game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("LaunchEvents"):WaitForChild("Return"):FireServer()
                         task.wait(0.4) 
@@ -973,6 +1131,55 @@ misc1:Checkbox({
 	end
 })
 
+local misc45 = misc:CollapsingHeader({Title="Performance",Collapsed=false,NoArrow=true,OpenOnArrow=true})
+
+local scren = game.CoreGui:FindFirstChild("CandyHub_Performance") or Instance.new("ScreenGui",game.CoreGui);scren.Name = "CandyHub_Performance"
+scren.IgnoreGuiInset = true
+scren.Enabled = false
+local frame = scren:FindFirstChild("Frame") or Instance.new("Frame",scren)
+frame.Size = UDim2.new(1,0,1,0)
+frame.BackgroundColor3 = Color3.fromRGB(0,0,0)
+
+misc45:Checkbox({
+	Value = false,
+	Label = "Fill Screen",
+	Callback = function(self, v: boolean)
+        task.spawn(function()
+            _G.candyhub.fillscreen = v
+            scren.Enabled = _G.candyhub.fillscreen
+        end)
+	end
+})
+
+local slid = misc45:SliderInt({
+    Label = "FPS Cap",
+    Value = 1024,
+    Minimum = 4,
+    Maximum = 1024,
+    Callback = function(self, v: Int)
+        task.spawn(function()
+            if setfpscap and _G.candyhub.fpschanger then
+                _G.candyhub.maxfps = v
+                setfpscap(_G.candyhub.maxfps)
+            end
+        end)
+    end
+})
+
+misc45:Checkbox({
+	Value = false,
+	Label = "FPS Cap Changer",
+	Callback = function(self, v: boolean)
+        task.spawn(function()
+            _G.candyhub.fpschanger = v
+            if _G.candyhub.fpschanger then setfpscap(_G.candyhub.maxfps) end
+        end)
+	end
+})
+
+local lab = misc45:Label({Text=" 0 = inf "})
+lab.TextColor3 = Color3.fromRGB(100,100,225)
+
 local misc2 = misc:CollapsingHeader({Title="GUI",Collapsed=false,NoArrow=true,OpenOnArrow=true})
 
 misc2:Checkbox({
@@ -985,7 +1192,8 @@ misc2:Checkbox({
 	end
 })
 
-f1:SliderInt({
+--[[
+misc2:SliderInt({
     Label = "X (WIP)",
     Value = 1,
     Minimum = 1,
@@ -995,7 +1203,7 @@ f1:SliderInt({
             --_G.candyhub.posy = v 
         end)
     end
-})
+})]]
 
 misc2:Checkbox({
 	Value = false,
