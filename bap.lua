@@ -2,7 +2,7 @@ print("4")
 local name = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
 local supportedVersion = "v1.4.2"
 local supportedVersionp = 1395
-local scriptversion = "v1.8.4"
+local scriptversion = "v1.8.5"
 
 local ReGui = loadstring(game:HttpGet('https://raw.githubusercontent.com/depthso/Dear-ReGui/refs/heads/main/ReGui.lua'))()
 local Window = ReGui:TabsWindow({
@@ -45,11 +45,6 @@ if isfile and readfile and listfiles and writefile and makefolder then
 else
     print("filing system unsupported")
 end
-
-
-
-
-
 if not _G.candyhub then _G.candyhub = {
     autofarm = false,
     moon = false,
@@ -87,18 +82,12 @@ if not _G.candyhub then _G.candyhub = {
     fpschanger = false,
 }end
 
-
-
-
-
 local abs = function(num)
     if num ~= 0 then
         return -num
     end
     return num
 end
-
-
 local function getplot()
     local plots = workspace.Islands
     for i, plot in plots:GetChildren() do
@@ -122,11 +111,6 @@ local function getitems()
     end
     return items
 end
-
-local function ismoon()
-
-end
-
 
 _G.filetarget = ""
 
@@ -269,22 +253,6 @@ local function getblocks(zip)
     return blocks
 end
 
---[[
-local function hasresources(zip)
-    local blocks = getblocks(zip)
-    local isc = false
-
-    for i, block in blocks do
-        for name, blockList in pairs(blocks) do
-            if game:GetService("Players").LocalPlayer.Important.Inventory:FindFirstChild(name).Value >= #blockList then
-                isc = true
-            else
-                return false
-            end
-        end
-    end
-    return isc
-end]]
 local function hasresources(zip)
     local blocks = getblocks(zip)
 
@@ -297,9 +265,6 @@ local function hasresources(zip)
 
     return true
 end
-
-
-
 
 print("6:199")
 local function loaddecoded(decoded)
@@ -318,21 +283,17 @@ local function loaddecoded(decoded)
     end
 end
 
-if isfile("CandyHub\\Config.json") then
-_G.candyhub = encode(readfile("CandyHub\\Config.json"))
+local function savecfg()
+    writefile("CandyHub\\Config.json",encode(_G.candyhub))
 end
 
-local function savecfg(variable)
-    writefile("CandyHub\\Config.json")
-
-
+local function loadcfg()
+    if isfile("CandyHub\\Config.json") then
+        _G.candyhub = decode(readfile("CandyHub\\Config.json"))
+    end
 end
 
-local function loadcfg(table)
-
-end
-
-
+loadcfg()
 
 -- game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("SpectialEvents"):WaitForChild("PortalTouched"):FireServer()
 
@@ -388,8 +349,6 @@ local function getoffseat()
     end
 end
 
-
-
 local Main = Window:CreateTab({Name = "Main"})
 local f1 = Main:CollapsingHeader({Title="Main",Collapsed=false}) --> Canvas
 local my = Main:CollapsingHeader({Title="Stats",Collapsed=false});my:SetVisible(false)
@@ -404,9 +363,10 @@ f1:Checkbox({
 	Label = "Auto Fly (Default Map)",
 	Callback = function(self, v: boolean)
         task.spawn(function()
-            _G.candyhub.autofarm = v
+            _G.candyhub.autofarm =v
+            savecfg()
 
-            my:SetVisible(_G.candyhub.autofarm)
+            my:SetVisible(_G.candyhub)
             if _G.candyhub.autofarm then
                 local money = game:GetService("Players").LocalPlayer.leaderstats.Cash.Value
                 local runnin= math.floor(tick())
@@ -502,7 +462,8 @@ f1:Checkbox({
     Label = "GodMode",
     Callback = function(self, v: boolean)
         task.spawn(function()
-            _G.candyhub.gm = v
+            _G.candyhub.gm =v
+            savecfg()
 
             while _G.candyhub.gm and task.wait(.4) do
                 for i, item in plot:FindFirstChild("PlacedBlocks"):GetDescendants() do
@@ -522,12 +483,15 @@ f1:Checkbox({
     end
 })
 
+savecfg()
+
 f1:Checkbox({
     Value = _G.candyhub.nofall,
     Label = "NoFall (Wont go down)",
     Callback = function(self, v: boolean)
         task.spawn(function()
-            _G.candyhub.nofall = v
+            _G.candyhub.nofall =v
+            savecfg()
             while _G.candyhub.nofall and task.wait(.01) do
                 local HumanoidRootPart = char()
                 if HumanoidRootPart ~= nil and plot.Important.Launched.Value then
@@ -547,7 +511,7 @@ f1:SliderInt({
     Maximum = 500,
     Callback = function(self, v: Int)
         task.spawn(function()
-            _G.candyhub.posy = v 
+            _G.candyhub.posy=v;savecfg() 
         end)
     end
 })
@@ -559,7 +523,7 @@ f1:SliderInt({
     Maximum = 500,
     Callback = function(self, v: Int)
         task.spawn(function()
-            _G.candyhub.y = v 
+            _G.candyhub.y=v;savecfg() 
         end)
     end
 })
@@ -571,34 +535,25 @@ f1:SliderInt({
     Maximum = 20000,
     Callback = function(self, v: Int)
         task.spawn(function()
-            _G.candyhub.x = v 
+            _G.candyhub.x=v;savecfg() 
         end)
     end
 })
 
 f1:InputInt({
     Label = "Distance To End",
-    Value = 100000,
+    Value = _G.candyhub.endpos,
     Maximum = 10000000,
     Minimum = 500,
     Callback = function(self, v: Int)
         task.spawn(function()
-            _G.candyhub.endpos = v
+            _G.candyhub.endpos=v;savecfg()
         end)
     end
 })
 
 local info123 = f1:Label({Text = "\n RECCOMENDED SPEEDUP: 17500+-\n IF SPEEDUP IS DETECTED YOU WONT GET REWARDS\n NEED MORE PROPELLERS FOR MORE SPD \n"})
 info123.TextColor3 = Color3.fromRGB(100,100,245)
-
-
-
-
-
-
-
-
-
 
 print("9:500")
 --[[
@@ -629,7 +584,7 @@ f2:InputInt({
     Maximum = 9999999999999,
     Minimum = 0,
     Callback = function(self, v: number)
-        _G.candyhub.distance = v
+        _G.candyhub.distance=v;savecfg()
     end
 })]]
 --local f64 = Main:CollapsingHeader({Title="Flight"}) --> Canvas
@@ -639,7 +594,7 @@ f64:Checkbox({
 	Label = "Spam SaveSlot 1",
 	Callback = function(self, v: boolean)
         task.spawn(function()
-            _G.candyhub.lags = v
+            _G.candyhub.lags=v;savecfg()
             while _G.candyhub.lags and task.wait() do
                 task.spawn(function()
                     local args = {
@@ -656,11 +611,11 @@ local f3 = Main:CollapsingHeader({Title="Auto Buy",Collapsed=false})
 local b663 
 
 f3:Checkbox({
-	Value = false,
+	Value = _G.candyhub.autobuy,
 	Label = "Auto Buy Items",
 	Callback = function(self, v: boolean)
         task.spawn(function()
-            _G.candyhub.autobuy = v
+            _G.candyhub.autobuy=v;savecfg()
             while _G.candyhub.autobuy and task.wait(0.1) do
                 if _G.candyhub.allitems then
                     local items = getitems()
@@ -684,11 +639,11 @@ f3:Checkbox({
 })
 
 f3:Checkbox({
-	Value = true,
+	Value = _G.candyhub.allitems,
 	Label = "All Items",
 	Callback = function(self, v: boolean)
         task.spawn(function()
-            _G.candyhub.allitems = v
+            _G.candyhub.allitems=v;savecfg()
             if b663 ~= nil then b663:SetVisible(not _G.candyhub.allitems) end
         end)
 	end
@@ -696,11 +651,11 @@ f3:Checkbox({
 b663 = f3:CollapsingHeader({Title="Items",Collapsed = false});b663:SetVisible(false)
 for i, item in getitems() do
     b663:Checkbox({
-        Value = false,
+        Value = _G.candyhub.items[item],
         Label = item,
         Callback = function(self, v: boolean)
             task.spawn(function()
-                _G.candyhub.items[item] = v
+                _G.candyhub.items[item]=v;savecfg()
             end)
         end
     })
@@ -727,7 +682,7 @@ bs1:InputText({
     Placeholder = "file name. . .",
     MultiLine = false,
     Callback = function(self, v: string)
-        _G.filetarget = v
+        _G.filetarget=v;savecfg()
     end
 })
 
@@ -983,9 +938,6 @@ row2:Button({
 	end
 })
 
-
-
-
 bs1:Button({
 	Text = "Take All Blocks",
 	Callback = function(self)
@@ -998,7 +950,7 @@ bs1:Checkbox({
 	Label = "Auto Take Blocks",
 	Callback = function(self, v: boolean)
         task.spawn(function()
-            _G.candyhub.autotake = v
+            _G.candyhub.autotake=v;savecfg()
         end)
 	end
 })
@@ -1023,7 +975,7 @@ bsdc1:Combo({
             if island.Important.OwnerID.Value ~= 0 then
 
                 for i, player in game.Players:GetChildren() do 
-                    if player.UserId == island.Important.OwnerID.Value then
+                    if player.UserId == island.Important.OwnerID.Value and player.Name ~= game.Players.LocalPlayer.Name then
                         table.insert(items,player.Name)
                     end
                 end
@@ -1034,7 +986,7 @@ bsdc1:Combo({
     Callback = function(self, v)
         for ___, island in workspace.Islands:GetChildren() do
             for i, player in game.Players:GetChildren() do 
-                if player.UserId == island.Important.OwnerID.Value then
+                if game.Players:FindFirstChild(player.Name).UserId == island.Important.OwnerID.Value then
                     _G.choosenisland = island.Name    
                 end
             end
@@ -1045,38 +997,24 @@ bsdc1:Combo({
 bsdc1:Button({
 	Text = "build",
 	Callback = function(self)
-        if _G.autotake then takeall() repeat task.wait(0.01) until #plot.PlacedBlocks:GetChildren() == 0 end
-        for i, item in workspace.Islands:FindFirstChild(_G.choosenisland).PlacedBlocks:GetChildren() do
-            local plotn = plot.Name:gsub("Island","")
-            local ploti = tonumber(plotn)-1
-            local itemname = item.Name
-            local x = item.PrimaryPart.Position.X
-            local y = item.PrimaryPart.Position.Y
-            local z = item.PrimaryPart.Position.Z
-            z = z - (85*ploti)
+        if not workspace.Islands:FindFirstChild(_G.choosenisland).Important.Launched.Value then
+            if _G.autotake then takeall() repeat task.wait(0.01) until #plot.PlacedBlocks:GetChildren() == 0 end
+            for i, item in workspace.Islands:FindFirstChild(_G.choosenisland).PlacedBlocks:GetChildren() do
+                local plotn = plot.Name:gsub("Island","")
+                local ploti = tonumber(plotn)-1
+                local itemname = item.Name
+                local x = item.PrimaryPart.Position.X
+                local y = item.PrimaryPart.Position.Y
+                local z = item.PrimaryPart.Position.Z
+                z = z - (85*ploti)
 
-            place(itemname,x,y,z)
-        end
+                place(itemname,x,y,z)
+            end
+        else warn("plane of selected player's island is flying, cant copy build.") end
     end
 })
 
-
---[[
-
-    
-]]
-
-
-
-
-
 print("11:800")
-
-
-
-
-
-
 
 local events = Window:CreateTab({Name = "Events"})
 local me = events:CollapsingHeader({Title="Moon Event",Collapsed=false,NoArrow=true,OpenOnArrow=true})
@@ -1088,11 +1026,11 @@ local ml4 = mi:Label({Text = "Wing Blood: 0"})
 local ml5 = mi:Label({Text = "Time: 0h 0m 0s"})
 
 me:Checkbox({
-	Value = false,
+	Value = _G.candyhub.moon,
 	Label = "Auto Farm Moon Coins",
 	Callback = function(self, v: boolean)
         task.spawn(function()
-            _G.candyhub.moon = v
+            _G.candyhub.moon=v;savecfg()
             mi:SetVisible(_G.candyhub.moon)
 
             if _G.candyhub.moon then
@@ -1194,20 +1132,20 @@ me:Checkbox({
 print("12:921")
 me:Combo({
 	Label = "Mode",
-	Selected = "SuperFast",
+	Selected = _G.candyhub.mode,
 	GetItems = function()return {"Normal","Fast","SuperFast"}end,
     Callback = function(self, v)
         task.spawn(function()
-            _G.candyhub.mode = v
+            _G.candyhub.mode=v;savecfg()
         end)
     end
 })
 me:Checkbox({
-	Value = false,
+	Value = _G.candyhub.abs,
 	Label = "Auto Buy Spins",
 	Callback = function(self, v: boolean)
         task.spawn(function()
-            _G.candyhub.abs = v
+            _G.candyhub.abs=v;savecfg()
             while _G.candyhub.abs and task.wait(0.01) do
                 if game:GetService("Players").LocalPlayer.Important.RedMoons.Value >= 10 then
                     game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("SpinEvents"):WaitForChild("PurchaseSpin"):InvokeServer()
@@ -1218,12 +1156,12 @@ me:Checkbox({
 })
 
 me:Checkbox({
-	Value = false,
+	Value = _G.candyhub.abs2,
 	Label = "Auto Spin",
 	Callback = function(self, v: boolean)
         task.spawn(function()
-            _G.candyhub.abs = v
-            while _G.candyhub.abs and task.wait(0.01) do
+            _G.candyhub.abs2=v;savecfg()
+            while _G.candyhub.abs2 and task.wait(0.01) do
                 if game:GetService("Players").LocalPlayer.replicated_data.available_spins.Value >= 1 then
                     game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("SpinEvents"):WaitForChild("PerformSpin"):InvokeServer()
                 end
@@ -1235,11 +1173,11 @@ me:Checkbox({
 local misc = Window:CreateTab({Name = "Misc"})
 local misc1 = misc:CollapsingHeader({Title="Afk",Collapsed=false,NoArrow=true,OpenOnArrow=true})
 misc1:Checkbox({
-	Value = false,
+	Value = _G.candyhub.afk,
 	Label = "Anti AFK",
 	Callback = function(self, v: boolean)
         task.spawn(function()
-            _G.candyhub.afk = v
+            _G.candyhub.afk=v;savecfg()
         end)
 	end
 })
@@ -1254,11 +1192,11 @@ frame.Size = UDim2.new(1,0,1,0)
 frame.BackgroundColor3 = Color3.fromRGB(0,0,0)
 
 misc45:Checkbox({
-	Value = false,
+	Value = _G.candyhub.fillscreen,
 	Label = "Fill Screen",
 	Callback = function(self, v: boolean)
         task.spawn(function()
-            _G.candyhub.fillscreen = v
+            _G.candyhub.fillscreen=v;savecfg()
             scren.Enabled = _G.candyhub.fillscreen
         end)
 	end
@@ -1266,13 +1204,13 @@ misc45:Checkbox({
 
 local slid = misc45:SliderInt({
     Label = "FPS Cap",
-    Value = 1024,
+    Value = _G.candyhub.maxfps,
     Minimum = 4,
     Maximum = 1024,
     Callback = function(self, v: Int)
         task.spawn(function()
             if setfpscap and _G.candyhub.fpschanger then
-                _G.candyhub.maxfps = v
+                _G.candyhub.maxfps=v;savecfg()
                 setfpscap(_G.candyhub.maxfps)
             end
         end)
@@ -1280,11 +1218,11 @@ local slid = misc45:SliderInt({
 })
 
 misc45:Checkbox({
-	Value = false,
+	Value = _G.candyhub.fpschanger,
 	Label = "FPS Cap Changer",
 	Callback = function(self, v: boolean)
         task.spawn(function()
-            _G.candyhub.fpschanger = v
+            _G.candyhub.fpschanger=v;savecfg()
             if _G.candyhub.fpschanger then
                 setfpscap(_G.candyhub.maxfps)
                 if _G.candyhub.maxfps == 1024 then
@@ -1318,7 +1256,7 @@ misc2:SliderInt({
     Maximum = 2,
     Callback = function(self, v: Int)
         task.spawn(function()
-            --_G.candyhub.posy = v 
+            --_G.candyhub.posy=v;savecfg() 
         end)
     end
 })]]
