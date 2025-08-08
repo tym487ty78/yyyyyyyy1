@@ -2,7 +2,7 @@ print("4")
 local name = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
 local supportedVersion = "v1.4.2"
 local supportedVersionp = 1395
-local scriptversion = "v1.8.5.1"
+local scriptversion = "v1.8.6.2"
 
 local ReGui = loadstring(game:HttpGet('https://raw.githubusercontent.com/depthso/Dear-ReGui/refs/heads/main/ReGui.lua'))()
 local Window = ReGui:TabsWindow({
@@ -98,7 +98,8 @@ local function getplot()
 end
 
 local plot = getplot()
-local spawnpart = plot:WaitForChild("SpawnPart")
+repeat task.wait(0.1) until plot:FindFirstChild("SpawnPart")
+local spawnpart = plot:FindFirstChild("SpawnPart")
 local spawnpartpos = spawnpart.Position
 local spawnpartcfr = spawnpart.CFrame
 
@@ -150,6 +151,36 @@ local function simulatetable2()
     for i, item in plot:FindFirstChild("PlacedBlocks"):GetChildren() do
 
         local plotn = plot.Name:gsub("Island","")
+        local ploti = tonumber(plotn)-1
+        
+        print(plotn)
+        print(plot.Name:gsub("Island",""))
+        print(ploti)
+
+        local x,y,z = item.PrimaryPart.Position.X,item.PrimaryPart.Position.Y,item.PrimaryPart.Position.Z
+        z = z + (85*ploti)
+        print(vector.create(x,y,z))
+
+        table.insert(zip, 
+            {
+                item.Name,
+                {
+                    x,
+                    y,
+                    z
+                }
+            }
+        )
+    end
+    return zip
+end
+
+local function simulatediff(plt)
+    plt = plt or plot.Name
+    local zip = {}
+    for i, item in plt:FindFirstChild("PlacedBlocks"):GetChildren() do
+
+        local plotn = plt.Name:gsub("Island","")
         local ploti = tonumber(plotn)-1
         
         print(plotn)
@@ -276,7 +307,7 @@ local function loaddecoded(decoded)
             local itemname = item[1]
             local x = item[2][1]
             local y = item[2][2]
-            local z = (tonumber(item[2][3]) or 0) - tonumber((85*ploti)) -- fix: default to 0 if nil
+            local z = item[2][3] - (85*ploti)
 
             place(itemname,x,y,z)
         end)
@@ -284,12 +315,35 @@ local function loaddecoded(decoded)
 end
 
 local function savecfg()
-    writefile("CandyHub\\Config.json",encode(_G.candyhub))
+
+    local name = "Config"
+
+    local fixedname = name:gsub("CandyHub","")
+    fixedname = fixedname:gsub("Candyhub/Builds","")
+    fixedname = fixedname:gsub("/","")
+    fixedname = fixedname:gsub("\\","")
+    fixedname = fixedname:gsub("CandyHub/", "")
+    fixedname = fixedname:gsub(".json","")
+
+    local path = fixedname..".json"
+
+    writefile(path,encode(_G.candyhub))
 end
 
 local function loadcfg()
-    if isfile("CandyHub\\Config.json") then
-        _G.candyhub = decode(readfile("CandyHub\\Config.json"))
+
+
+    local name = "Config"
+
+    local fixedname = name:gsub("CandyHub","")
+    fixedname = fixedname:gsub("Candyhub/Builds","")
+    fixedname = fixedname:gsub("/","")
+    fixedname = fixedname:gsub("\\","")
+    fixedname = fixedname:gsub("CandyHub/", "")
+    fixedname = fixedname:gsub(".json","")
+
+    if isfile(name) then
+        _G.candyhub = decode(readfile(name))
     end
 end
 
@@ -448,7 +502,7 @@ f1:Checkbox({
                 end
                 --dbg:Label({Text = "abc7"})
                 task.wait(1)
-                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("LaunchEvents"):WaitForChild("Return"):FireServer()
+                repeat task.wait(0.1) game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("LaunchEvents"):WaitForChild("Return"):FireServer() until not alive()
                 --dbg:Label({Text = "abc8"})
                 end
             end
@@ -743,18 +797,6 @@ row1:Button({
                     break
                 end
                 if type(blocks) == "table" and hasAny then
-                    local function getblocks(zip)
-                        local blocks = {}
-
-                        for _, res in ipairs(resources) do
-                            local name = res[1]
-                            blocks[name] = blocks[name] or {}
-                            table.insert(blocks[name], res)
-                        end
-
-                        return blocks
-                    end
-
                     local popup = ReGui:PopupModal({
                         Title = "Need More Blocks.",
                     })
@@ -827,7 +869,7 @@ row1:Button({
 	end
 })
 
-bs1:Button({
+bs1:Button({ 
 	Text = "copy selected file",
 	Callback = function(self)
         setclipboard(readbuild(_G.filetarget))
@@ -866,18 +908,6 @@ row2:Button({
                 break
             end
             if type(blocks) == "table" and hasAny then
-                local function getblocks(zip)
-                    local blocks = {}
-
-                    for _, res in ipairs(resources) do
-                        local name = res[1]
-                        blocks[name] = blocks[name] or {}
-                        table.insert(blocks[name], res)
-                    end
-
-                    return blocks
-                end
-
                 local popup = ReGui:PopupModal({
                     Title = "Need More Blocks.",
                 })
@@ -967,50 +997,41 @@ local labelsbsdc2 = {}
 local bs2 = bsa:CollapsingHeader({Title="Informations/Data",Collapsed=false,NoArrow=true,OpenOnArrow=true})
 
 bsdc1:Combo({
-	Label = "Islands",
+	Label = "Islands (Right to Left)",
 	Selected = "",
 	GetItems = function()
         local items = {}
         for ___, island in workspace.Islands:GetChildren() do
-            if island.Important.OwnerID.Value ~= 0 then
-
-                for i, player in game.Players:GetChildren() do 
-                    if player.UserId == island.Important.OwnerID.Value and player.Name ~= game.Players.LocalPlayer.Name then
-                        table.insert(items,player.Name)
-                    end
-                end
-            end
+            if island.Important.OwnerID.Value ~= 0 and island.Name ~= plot.Name then table.insert(items,island.Name) end
         end
         return items
 	end,
     Callback = function(self, v)
-        for ___, island in workspace.Islands:GetChildren() do
-            for i, player in game.Players:GetChildren() do 
-                if game.Players:FindFirstChild(player.Name).UserId == island.Important.OwnerID.Value then
-                    _G.choosenisland = island.Name    
-                end
-            end
-        end
+        _G.choosenisland = v
     end
 })
 
+-- TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:TODO:
+-- save(_G.filetarget,simulatetable2()) || setclipboard(readbuild(_G.filetarget)) ||  loaddecoded(decode(_G.json))
 bsdc1:Button({
 	Text = "build",
 	Callback = function(self)
         if not workspace.Islands:FindFirstChild(_G.choosenisland).Important.Launched.Value then
-            if _G.autotake then takeall() repeat task.wait(0.01) until #plot.PlacedBlocks:GetChildren() == 0 end
+            if _G.autotake then takeall() task.wait(0.5) end
+
+            local sd = simulatediff(workspace.Islands:FindFirstChild(_G.choosenisland))
+            loaddecoded(sd)
+
+            --[[
             for i, item in workspace.Islands:FindFirstChild(_G.choosenisland).PlacedBlocks:GetChildren() do
-                local plotn = plot.Name:gsub("Island","")
-                local ploti = tonumber(plotn)-1
+                local plotn = plot.Name:gsub("Island","");local ploti = tonumber(plotn)-1
                 local itemname = item.Name
                 local x = item.PrimaryPart.Position.X
                 local y = item.PrimaryPart.Position.Y
-                local z = item.PrimaryPart.Position.Z
-                z = z - (85*ploti)
-
+                local z = item.PrimaryPart.Position.Z - (85*ploti)
                 place(itemname,x,y,z)
-            end
-        else warn("plane of selected player's island is flying, cant copy build.") end
+            end]]
+        else warn("plane of selected island is flying, cant copy build.") end
     end
 })
 
