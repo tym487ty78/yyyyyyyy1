@@ -2,7 +2,7 @@ print("4")
 local name = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
 local supportedVersion = "v1.4.2"
 local supportedVersionp = 1395
-local scriptversion = "v1.8.5"
+local scriptversion = "v1.8.5.1"
 
 local ReGui = loadstring(game:HttpGet('https://raw.githubusercontent.com/depthso/Dear-ReGui/refs/heads/main/ReGui.lua'))()
 local Window = ReGui:TabsWindow({
@@ -1067,7 +1067,7 @@ me:Checkbox({
                                 game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("LaunchEvents"):WaitForChild("Launch"):FireServer()
                             end 
                             task.wait(1)
-                        until launched.Value or not _G.candyhub.moon
+                        until launched.Value or not _G.candyhub.moon or not game:GetService("ReplicatedStorage").ActiveEvents.BloodMoonActive.Value
                     end
                     if not game.Players.LocalPlayer:GetAttribute("InEvent") then
                         repeat
@@ -1082,7 +1082,7 @@ me:Checkbox({
                                     end end
                                 end)
                             end
-                        until game.Players.LocalPlayer:GetAttribute("InEvent") and plot:FindFirstChild("SpawnPart") or not _G.candyhub.moon
+                        until game.Players.LocalPlayer:GetAttribute("InEvent") and plot:FindFirstChild("SpawnPart") or not _G.candyhub.moon or not game:GetService("ReplicatedStorage").ActiveEvents.BloodMoonActive.Value
                     end
                     --[[
                     if not plot:FindFirstChild("SpawnPart") then
