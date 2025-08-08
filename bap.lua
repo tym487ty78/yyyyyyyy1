@@ -2,12 +2,12 @@ print("4")
 local name = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
 local supportedVersion = "v1.4.2"
 local supportedVersionp = 1395
-local scriptversion = "v1.8.25"
+local scriptversion = "v1.8.4"
 
 local ReGui = loadstring(game:HttpGet('https://raw.githubusercontent.com/depthso/Dear-ReGui/refs/heads/main/ReGui.lua'))()
 local Window = ReGui:TabsWindow({
 	Title = "[🍬] CandyHub - ".. name .. " " .. scriptversion,
-	Size = UDim2.fromOffset(375, 425),
+	Size = UDim2.fromOffset(380, 440),
     NoClose = true
 }) --> TabSelector & WindowClass
 
@@ -58,7 +58,7 @@ if not _G.candyhub then _G.candyhub = {
     endpos = 100000,
     allitems = true,
     maxfps = 0,
-    mode = "Normal",
+    mode = "SuperFast",
     autotake = true,
     items = {
         propeller_2 = false,
@@ -190,6 +190,16 @@ local function simulatetable2()
     return zip
 end
 
+local function readbuild(name)
+    local fixedname = name:gsub("CandyHub\\Builds","")
+    fixedname = fixedname:gsub("Candyhub/Builds","")
+    fixedname = fixedname:gsub("/","")
+    fixedname = fixedname:gsub("CandyHubBuilds", "")
+    fixedname = fixedname:gsub(".json","")
+
+    local path = "CandyHub\\Builds\\"..fixedname..".json"
+    return readfile(path)
+end
 
 local function decode(table)
     return game:GetService("HttpService"):JSONDecode(table)
@@ -293,7 +303,7 @@ end
 
 print("6:199")
 local function loaddecoded(decoded)
-    for i, item in ipairs(decoded) do
+    for i, item in decoded do
         task.spawn(function()
 
             local plotn = plot.Name:gsub("Island","")
@@ -709,15 +719,7 @@ end
 
 local bs1 = bsa:CollapsingHeader({Title="Build ",NoArrow = true,OpenOnArrow = true,Collapsed=false})
 
-local bsdc15 = bs1:CollapsingHeader({Title="Copy Build",Collapsed=true})
-local bsdc1 = bsdc15:CollapsingHeader({Title="Copy",NoArrow = true,OpenOnArrow = true,Collapsed=false})
 
-local bsdc2 = bsdc15:CollapsingHeader({Title="blocks (WIP)",NoArrow = false,OpenOnArrow = false,Collapsed=false})
-local labelsbsdc2 = {}
-
-
-
-local bs2 = bsa:CollapsingHeader({Title="Informations/Data",Collapsed=false,NoArrow=true,OpenOnArrow=true})
 if isfile and writefile and readfile and listfiles and makefolder then
 bs1:InputText({
     Label = "File Name",
@@ -870,13 +872,118 @@ row1:Button({
 	end
 })
 
-row1:Button({
+bs1:Button({
 	Text = "copy selected file",
 	Callback = function(self)
-        setclipboard(decode(load(_G.filetarget)))
+        setclipboard(readbuild(_G.filetarget))
         --save(_G.filetarget,simulatetable2())
 	end
 })
+
+bs1:InputText({
+    Label = "json",
+    Value = "",
+    Placeholder ='[["driver_seat_1",[1,2,3]]]',
+    MultiLine = false,
+    Callback = function(self, v: string)
+        _G.json = v
+    end
+})
+
+local row2 = bs1:Row({
+    Expanded = true
+})
+
+row2:Button({
+	Text = "load from json",
+	Callback = function(self)
+        if hasresources(decode(_G.json)) then
+            if _G.candyhub.autotake then
+                takeall()
+                repeat task.wait() until #plot.PlacedBlocks:GetChildren() == 0
+            end
+            loaddecoded(decode(_G.json))
+        else
+            local blocks = getblocks(decode(_G.json))
+            local hasAny = false
+            for _ in pairs(blocks) do
+                hasAny = true
+                break
+            end
+            if type(blocks) == "table" and hasAny then
+                local function getblocks(zip)
+                    local blocks = {}
+
+                    for _, res in ipairs(resources) do
+                        local name = res[1]
+                        blocks[name] = blocks[name] or {}
+                        table.insert(blocks[name], res)
+                    end
+
+                    return blocks
+                end
+
+                local popup = ReGui:PopupModal({
+                    Title = "Need More Blocks.",
+                })
+
+                for name, blockList in pairs(blocks) do
+                    --print(name .. " blocks: " .. tostring(#blockList))
+                    if not game:GetService("Players").LocalPlayer.Important.Inventory:FindFirstChild(name) then
+                        popup:Label({
+                            Text = name..": DOESNT EXIST"
+                        })
+                    else
+                        if game:GetService("Players").LocalPlayer.Important.Inventory:FindFirstChild(name).Value >= #blockList then
+                            popup:Label({
+                                Text = name..": [" .. tostring(game:GetService("Players").LocalPlayer.Important.Inventory:FindFirstChild(name).Value) .. "/" .. tostring(#blockList) .. "] (COMPLETE)"
+                            })
+                        else
+                            popup:Label({
+                                Text = name..": [" .. tostring(game:GetService("Players").LocalPlayer.Important.Inventory:FindFirstChild(name).Value) .. "/" .. tostring(#blockList) .. "]"
+                            })
+                        end
+                    end
+                end
+
+                local Row = popup:Row({
+                    Expanded = true
+                })
+                Row:Button({
+                    Text = "Ok",
+                    Callback = function()
+                        popup:ClosePopup()
+                    end,
+                })
+            else
+                local popup = ReGui:PopupModal({
+                    Title = "Save Error",
+                })
+                popup:Label({
+                    Text = "\n This Save Doesnt contain any blocks. \n"
+                })
+                local Row = popup:Row({
+                    Expanded = true
+                })
+                Row:Button({
+                    Text = "Ok",
+                    Callback = function()
+                        popup:ClosePopup()
+                    end,
+                })
+            end
+        end
+	end
+})
+
+row2:Button({
+	Text = "save from json",
+	Callback = function(self)print("")
+        save(_G.filetarget,decode(_G.json))
+	end
+})
+
+
 
 
 bs1:Button({
@@ -895,11 +1002,17 @@ bs1:Checkbox({
         end)
 	end
 })
-
-
 end
 
+local bsdc15 = bs1:CollapsingHeader({Title="Copy Build",Collapsed=true})
+local bsdc1 = bsdc15:CollapsingHeader({Title="Copy",NoArrow = false,OpenOnArrow = false,Collapsed=false})
 
+local bsdc2 = bsdc15:CollapsingHeader({Title="blocks (WIP)",NoArrow = false,OpenOnArrow = false,Collapsed=false})
+local labelsbsdc2 = {}
+
+
+
+local bs2 = bsa:CollapsingHeader({Title="Informations/Data",Collapsed=false,NoArrow=true,OpenOnArrow=true})
 
 bsdc1:Combo({
 	Label = "Islands",
@@ -1081,7 +1194,7 @@ me:Checkbox({
 print("12:921")
 me:Combo({
 	Label = "Mode",
-	Selected = "Normal",
+	Selected = "SuperFast",
 	GetItems = function()return {"Normal","Fast","SuperFast"}end,
     Callback = function(self, v)
         task.spawn(function()
@@ -1172,12 +1285,17 @@ misc45:Checkbox({
 	Callback = function(self, v: boolean)
         task.spawn(function()
             _G.candyhub.fpschanger = v
-            if _G.candyhub.fpschanger then setfpscap(_G.candyhub.maxfps) end
+            if _G.candyhub.fpschanger then
+                setfpscap(_G.candyhub.maxfps)
+                if _G.candyhub.maxfps == 1024 then
+                    setfpscap(0)
+                end 
+            end
         end)
 	end
 })
 
-local lab = misc45:Label({Text=" 0 = inf "})
+local lab = misc45:Label({Text=" 1024 = inf "})
 lab.TextColor3 = Color3.fromRGB(100,100,225)
 
 local misc2 = misc:CollapsingHeader({Title="GUI",Collapsed=false,NoArrow=true,OpenOnArrow=true})
