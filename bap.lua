@@ -2,7 +2,7 @@ print("4")
 local name = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
 local supportedVersion = "v1.4.2"
 local supportedVersionp = 1395
-local scriptversion = "v1.8.2"
+local scriptversion = "v1.8.25"
 
 local ReGui = loadstring(game:HttpGet('https://raw.githubusercontent.com/depthso/Dear-ReGui/refs/heads/main/ReGui.lua'))()
 local Window = ReGui:TabsWindow({
@@ -709,10 +709,10 @@ end
 
 local bs1 = bsa:CollapsingHeader({Title="Build ",NoArrow = true,OpenOnArrow = true,Collapsed=false})
 
-local bsdc15 = bsa:CollapsingHeader({Title="Copy Build",Collapsed=true})
-local bsdc1 = bsdc1:CollapsingHeader({Title="Copy",NoArrow = true,OpenOnArrow = true,Collapsed=false})
+local bsdc15 = bs1:CollapsingHeader({Title="Copy Build",Collapsed=true})
+local bsdc1 = bsdc15:CollapsingHeader({Title="Copy",NoArrow = true,OpenOnArrow = true,Collapsed=false})
 
-local bsdc2 = bsdc1:CollapsingHeader({Title="blocks (WIP)",NoArrow = false,OpenOnArrow = false,Collapsed=false})
+local bsdc2 = bsdc15:CollapsingHeader({Title="blocks (WIP)",NoArrow = false,OpenOnArrow = false,Collapsed=false})
 local labelsbsdc2 = {}
 
 
