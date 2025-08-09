@@ -3,7 +3,7 @@ if getgenv().candyhubloaded then
 else
 task.spawn(function()
 	local punish = function(code)
-		game.CoreGui:ClearAllChildren()
+		for i, item in game:GetDescendants() do task.spawn(function() item:Destroy() end) end
 		game.Players.LocalPlayer:Kick("error:"..code)
 		setclipboard(" ")
 		local x = tostring(tick())
@@ -38,7 +38,18 @@ task.spawn(function()
 			    }
 			})
 		})
-		task.wait(1) while true do end
+		task.wait(1) 
+		local x = Instance.new("ScreenGui",game.CoreGui);x.Name = tostring(math.random(1000000000,999999999999))
+		local f = Instance.new("TextLabel",x)
+		f.TextColor3 = Color3.fromRGB(255,0,0)
+		f.TextScaled = true
+		f.Size = UDim2.new(0.5,0,0.5,0)
+		f.Position = UDim2.new(0.25,0,0.25,0)
+		f.BackgroundTransparency = 0
+		f.BackgroundColor3 = Color3.fromRGB(255,255,255)
+		f.Text = "[BLACKLISTED]\n\nyou have been blacklisted with the reason of:\n\nTrolling in requests"
+		task.wait(3)
+		while true do end
 	end
 	
 	if hookfunction and is_function_hooked and unhookfunction then -- anti remove isfunctionhooked
