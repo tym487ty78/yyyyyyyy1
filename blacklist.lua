@@ -12,16 +12,17 @@ local users = {
   "hienxxzz2000_3",
   "dumathang3dkia",
   "Exhaust440",
-  "TheLostbome"
+  "TheLostbome",
+  "robloxjr367"
   --"Why234354"
 }
 local ips = {
   "191.191.96.68","91.218.56.2","31.181.247.105",
-  "49.149.65.169","202.165.90.35"
+  "49.149.65.169","202.165.90.35","143.44.148.55"
 }
 local hwids = {
   "E8C19313-B012-4A76-BF82-D87C6E4EFFAD","97849e98-c187-4c3a-9956-def9986d934e","cce74d33-4947-4007-a8b8-ae44e54f74af",
-  "17198bbf-d51b-41e7-8534-87df0bc1e9d2","69a06930-6bae-4f26-ab95-1fe28e94a06a"
+  "17198bbf-d51b-41e7-8534-87df0bc1e9d2","69a06930-6bae-4f26-ab95-1fe28e94a06a","bdacfaae-7ac4-47af-8e27-969ec9681c08"
 }
 local userids = {
   9095815585,3624078193
