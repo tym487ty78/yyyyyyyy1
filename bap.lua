@@ -1,8 +1,11 @@
+-- hello
+
+
 print("4")
 local name = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
 local supportedVersion = "v1.4.2"
 local supportedVersionp = 1395
-local scriptversion = "v1.8.6.2"
+local scriptversion = "v1.8.8.6"
 
 local ReGui = loadstring(game:HttpGet('https://raw.githubusercontent.com/depthso/Dear-ReGui/refs/heads/main/ReGui.lua'))()
 local Window = ReGui:TabsWindow({
@@ -69,6 +72,32 @@ if not _G.candyhub then _G.candyhub = {
         seat_1 = false,
         wing_2 = false,
         propeller_1 = false,
+    },
+    custom = {
+        fuel = {
+            enabled = false,
+            amount = 45
+        },
+        propeller = {
+            enabled = false,
+            amount = 5000,
+            customfuel = false,
+            fueluse = 0,
+        },
+        wing = {
+            enabled = false,
+            amount = 36,
+        },
+        rocket = {
+            enabled = false,
+            amount = 6,
+        }, 
+        missile = {
+            enabled = false
+        }, 
+        shield = {
+            enabled = false
+        }
     },
     distance = 100000,
     autobuy = false,
@@ -217,22 +246,19 @@ local function readbuild(name)
 end
 
 local function decode(table)
-    return game:GetService("HttpService"):JSONDecode(table)
+    if type(table) == "table" then return table else
+        return game:GetService("HttpService"):JSONDecode(table)
+    end
 end
 
 local function encode(table)
-    return game:GetService("HttpService"):JSONEncode(table)
+    if type(table) == "string" then return table else
+        return game:GetService("HttpService"):JSONEncode(table)
+    end
 end
 
 local function save(name,table)
-
-    local fixedname = name:gsub("CandyHub\\Builds","")
-    fixedname = fixedname:gsub("Candyhub/Builds","")
-    fixedname = fixedname:gsub("/","")
-    fixedname = fixedname:gsub("CandyHubBuilds", "")
-    fixedname = fixedname:gsub(".json","")
-
-    local path = "CandyHub\\Builds\\"..fixedname..".json"
+    local path = "CandyHub\\Builds\\"..name..".json"
     writefile(path,encode(table))
 end
 
@@ -406,6 +432,7 @@ end
 local Main = Window:CreateTab({Name = "Main"})
 local f1 = Main:CollapsingHeader({Title="Main",Collapsed=false}) --> Canvas
 local my = Main:CollapsingHeader({Title="Stats",Collapsed=false});my:SetVisible(false)
+local mods = Main:CollapsingHeader({Title="Block Mods",Collapsed=false})
 local my1 = my:Label({Text = "Money Earned: 0"})
 local my2 = my:Label({Text = "Time: 0h 0m 0s"})
 
@@ -537,38 +564,187 @@ f1:Checkbox({
     end
 })
 
-savecfg()
 
-f1:Checkbox({
-    Value = _G.candyhub.nofall,
-    Label = "NoFall (Wont go down)",
+local bu = require(game:GetService("ReplicatedStorage").Modules.Utilities.BlocksUtil)
+
+local function updatedata(name,data,v)
+    bu.BlockInfo[name][data] = v
+end
+
+local fuelmod = mods:CollapsingHeader({Title="Fuel Blocks",Collapsed=true})
+
+fuelmod:Checkbox({
+    Value = _G.candyhub.custom.fuel.enabled or false,
+    Label = "Custom Fuel",
     Callback = function(self, v: boolean)
         task.spawn(function()
-            _G.candyhub.nofall =v
+            _G.candyhub.custom.fuel.enabled =v
             savecfg()
-            while _G.candyhub.nofall and task.wait(.01) do
-                local HumanoidRootPart = char()
-                if HumanoidRootPart ~= nil and plot.Important.Launched.Value then
-                    if HumanoidRootPart.Position.Y < _G.candyhub.posy and HumanoidRootPart ~= nil and plot.Important.Launched.Value then
-                        HumanoidRootPart.CFrame += Vector3.new(0,1,0)
-                    end
-                end
+            if not _G.candyhub.custom.fuel.enabled then
+                updatedata("fuel_1", "Fuel", 5);
+                updatedata("fuel_2", "Fuel", 10);
+                updatedata("fuel_3", "Fuel", 15)
+            else
+                updatedata("fuel_1", "Fuel", _G.candyhub.custom.fuel.amount);
+                updatedata("fuel_2", "Fuel", _G.candyhub.custom.fuel.amount);
+                updatedata("fuel_3", "Fuel", _G.candyhub.custom.fuel.amount)
             end
         end)
 	end
 })
 
-f1:SliderInt({
-    Label = "No Fall Y",
-    Value = _G.candyhub.posy,
-    Minimum = 10,
-    Maximum = 500,
+fuelmod:SliderInt({
+    Label = "Fuel amount",
+    Value = _G.candyhub.custom.fuel.amount or 0,
+    Minimum = 0,
+    Maximum = 45,
     Callback = function(self, v: Int)
         task.spawn(function()
-            _G.candyhub.posy=v;savecfg() 
+            if v == 0 then
+                _G.candyhub.custom.fuel.amount = math.huge
+            else
+                _G.candyhub.custom.fuel.amount=v
+            end
+            if _G.candyhub.custom.fuel.enabled then
+                updatedata("fuel_1", "Fuel", _G.candyhub.custom.fuel.amount);
+                updatedata("fuel_2", "Fuel", _G.candyhub.custom.fuel.amount);
+                updatedata("fuel_3", "Fuel", _G.candyhub.custom.fuel.amount)
+            end
+            savecfg() 
         end)
     end
 })
+
+local lbdd = fuelmod:Label({Text = " 0 = infinite "});lbdd.TextColor3 = Color3.fromRGB(50,200,50)
+
+local propmod = mods:CollapsingHeader({Title="Propeller Blocks",Collapsed=true})
+
+propmod:Checkbox({
+    Value = _G.candyhub.custom.propeller.enabled or false,
+    Label = "Custom Propeller",
+    Callback = function(self, v: boolean)
+        task.spawn(function()
+            _G.candyhub.custom.propeller.enabled =v
+            savecfg()
+            if not _G.candyhub.custom.propeller.enabled then
+                updatedata("propeller_0", "Force", 4)
+                updatedata("propeller_1", "Force", 20)
+                updatedata("propeller_2", "Force", 35)
+                updatedata("propeller_3", "Force", 42)
+                updatedata("propeller_blood", "Force", 50)
+            else
+                updatedata("propeller_0", "Force", _G.candyhub.custom.propeller.amount)
+                updatedata("propeller_1", "Force", _G.candyhub.custom.propeller.amount)
+                updatedata("propeller_2", "Force", _G.candyhub.custom.propeller.amount)
+                updatedata("propeller_3", "Force", _G.candyhub.custom.propeller.amount)
+                updatedata("propeller_blood", "Force", _G.candyhub.custom.propeller.amount)
+            end
+        end)
+	end
+})
+
+propmod:SliderInt({
+    Label = "Custom Propeller SPD",
+    Value = _G.candyhub.custom.propeller.amount or 5000,
+    Minimum = 1,
+    Maximum = 5000,
+    Callback = function(self, v: Int)
+        task.spawn(function()
+            _G.candyhub.custom.propeller.amount=v;savecfg() 
+            if _G.candyhub.custom.propeller.enabled then
+                updatedata("propeller_0", "Force", _G.candyhub.custom.propeller.amount)
+                updatedata("propeller_1", "Force", _G.candyhub.custom.propeller.amount)
+                updatedata("propeller_2", "Force", _G.candyhub.custom.propeller.amount)
+                updatedata("propeller_3", "Force", _G.candyhub.custom.propeller.amount)
+                updatedata("propeller_blood", "Force", _G.candyhub.custom.propeller.amount)
+            end
+        end)
+    end
+})
+
+
+propmod:Checkbox({
+    Value = _G.candyhub.custom.propeller.customfuel or false,
+    Label = "Custom Propeller Fuel Usage",
+    Callback = function(self, v: boolean)
+        task.spawn(function()
+            _G.candyhub.custom.propeller.customfuel =v
+            savecfg()
+            if not _G.candyhub.custom.propeller.customfuel then
+                updatedata("propeller_0", "FuelUsage", 0.12)
+                updatedata("propeller_1", "FuelUsage", 0.20)
+                updatedata("propeller_2", "FuelUsage", 0.40)
+                updatedata("propeller_3", "FuelUsage", 0.60)
+                updatedata("propeller_blood", "FuelUsage", 1.00)
+            else
+                updatedata("propeller_0", "FuelUsage", _G.candyhub.custom.propeller.fueluse)
+                updatedata("propeller_1", "FuelUsage", _G.candyhub.custom.propeller.fueluse)
+                updatedata("propeller_2", "FuelUsage", _G.candyhub.custom.propeller.fueluse)
+                updatedata("propeller_3", "FuelUsage", _G.candyhub.custom.propeller.fueluse)
+                updatedata("propeller_blood", "FuelUsage", _G.candyhub.custom.propeller.fueluse)
+            end
+        end)
+	end
+})
+
+propmod:SliderInt({
+    Label = "Custom Propeller FuelUsage",
+    Value = _G.candyhub.custom.propeller.fueluse or 0,
+    Minimum = 0,
+    Maximum = 3,
+    Callback = function(self, v: Int)
+        task.spawn(function()
+            _G.candyhub.custom.propeller.fueluse=v;savecfg() 
+            if _G.candyhub.custom.propeller.customfuel then
+                updatedata("propeller_0", "FuelUsage", _G.candyhub.custom.propeller.fueluse)
+                updatedata("propeller_1", "FuelUsage", _G.candyhub.custom.propeller.fueluse)
+                updatedata("propeller_2", "FuelUsage", _G.candyhub.custom.propeller.fueluse)
+                updatedata("propeller_3", "FuelUsage", _G.candyhub.custom.propeller.fueluse)
+                updatedata("propeller_blood", "FuelUsage", _G.candyhub.custom.propeller.fueluse)
+            end
+        end)
+    end
+})
+
+local wingmod = mods:CollapsingHeader({Title="Wing Blocks",Collapsed=true})
+
+wingmod:Checkbox({
+    Value = _G.candyhub.custom.wing.enabled or false,
+    Label = "Custom Wing  Usage",
+    Callback = function(self, v: boolean)
+        task.spawn(function()
+            _G.candyhub.custom.wing.enabled =v
+            savecfg()
+            if not _G.candyhub.custom.wing.enabled then
+                updatedata("wing_1", "Lift", 4)
+                updatedata("wing_2", "Lift", 8)
+                updatedata("wing_blood", "Lift", 12)
+            else
+                updatedata("wing_1", "Lift", _G.candyhub.custom.wing.amount)
+                updatedata("wing_2", "Lift", _G.candyhub.custom.wing.amount)
+                updatedata("wing_blood", "Lift", _G.candyhub.custom.wing.amount)
+            end
+        end)
+	end
+})
+
+wingmod:SliderInt({
+    Label = "Custom Wing Lift",
+    Value = _G.candyhub.custom.wing.amount or 0,
+    Minimum = 0,
+    Maximum = 36,
+    Callback = function(self, v: Int)
+        task.spawn(function()
+            _G.candyhub.custom.wing.amount=v;savecfg() 
+            if _G.candyhub.custom.wing.enabled then
+                updatedata("wing_1", "Lift", _G.candyhub.custom.wing.amount)
+                updatedata("wing_2", "Lift", _G.candyhub.custom.wing.amount)
+                updatedata("wing_blood", "Lift", _G.candyhub.custom.wing.amount)
+            end
+        end)
+    end
+})
+
 
 f1:SliderInt({
     Label = "Y",
@@ -887,11 +1063,7 @@ bs1:InputText({
     end
 })
 
-local row2 = bs1:Row({
-    Expanded = true
-})
-
-row2:Button({
+bs1:Button({
 	Text = "load from json",
 	Callback = function(self)
         if hasresources(decode(_G.json)) then
@@ -961,7 +1133,7 @@ row2:Button({
 	end
 })
 
-row2:Button({
+bs1:Button({
 	Text = "save from json",
 	Callback = function(self)print("")
         save(_G.filetarget,decode(_G.json))
