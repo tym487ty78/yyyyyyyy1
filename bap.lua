@@ -3,9 +3,9 @@
 
 print("4")
 local name = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
-local supportedVersion = "v1.4.2"
+local supportedVersion = "v1.5.0"
 local supportedVersionp = 1395
-local scriptversion = "v1.8.8.6"
+local scriptversion = "v1.9 [BETA]"
 
 local ReGui = loadstring(game:HttpGet('https://raw.githubusercontent.com/depthso/Dear-ReGui/refs/heads/main/ReGui.lua'))()
 local Window = ReGui:TabsWindow({
@@ -1286,23 +1286,9 @@ me:Checkbox({
                         until plot:FindFirstChild("SpawnPart")
                     end]]
 
-                    for i, item in pairs(game:GetService("ReplicatedStorage"):GetDescendants()) do
+                    for i, item in pairs(workspace:FindFirstChild("SpawnedSections"):GetDescendants()) do
                         if item:FindFirstChild("BloodMoonCoin") and item.Name ~= "Instances" then
-                            if _G.candyhub.mode == "Normal" then game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = item.CFrame + Vector3.new(0,0,0) 
-                            elseif _G.candyhub.mode == "Fast" then
-                                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(
-                                    Vector3.new(
-                                        game.Players.LocalPlayer.Character.HumanoidRootPart.Position.X,
-                                        500,
-                                        game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Z
-                                    ),
-                                    Vector3.new(
-                                        game.Players.LocalPlayer.Character.HumanoidRootPart.Position.X + 10,
-                                        500,
-                                        game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Z
-                                    )
-                                )
-                            end
+                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = item.CFrame
                             local args = {item.Name}
                             game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("SpectialEvents"):WaitForChild("CollectCoin"):FireServer(unpack(args))
                             if _G.candyhub.mode == "Normal" or _G.candyhub.mode == "Fast" then task.wait(0.01) else
@@ -1311,13 +1297,13 @@ me:Checkbox({
                         end
                     end
 
-                    if _G.candyhub.mode == "Normal" or not game:GetService("ReplicatedStorage").ActiveEvents.BloodMoonActive.Value or not _G.candyhub.moon then 
+                    if not game:GetService("ReplicatedStorage").ActiveEvents.BloodMoonActive.Value or not _G.candyhub.moon then 
                         task.wait(0.4)
                         game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("LaunchEvents"):WaitForChild("Return"):FireServer()
                         task.wait(0.4) 
                     end
                 end
-                task.wait(0.01)
+                task.wait(0.1)
             end
         end)
 	end
